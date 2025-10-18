@@ -1,2 +1,2 @@
 # ProdajaKarata
-aplikacija za prodaju karat za nogometne utakmice
+aplikacija za prodaju karata za nogometne utakmice
