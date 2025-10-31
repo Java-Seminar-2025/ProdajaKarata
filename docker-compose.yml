@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: football-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ironmaiden
+      MYSQL_DATABASE: football_ticket_sale_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: football
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - football-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: football-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/football_ticket_sale_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: football
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - football-network
+
+volumes:
+  mysql-data:
+
+networks:
+  football-network:
+    driver: bridge

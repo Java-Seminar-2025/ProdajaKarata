@@ -1,0 +1,9 @@
+target/
+!target/ticketsale-1.0-SNAPSHOT.jar
+.mvn/
+*.iml
+.idea/
+.git/
+.gitignore
+README.md
+*.md
