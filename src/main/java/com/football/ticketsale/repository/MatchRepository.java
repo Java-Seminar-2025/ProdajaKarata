@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface MatchRepository extends JpaRepository<MatchEntity, UUID> {
-    List<MatchEntity> findByStadium(StadiumEntity stadium);
+    List<MatchEntity> findByStadiumEntity(StadiumEntity stadium);
     List<MatchEntity> findByMatchDatetimeBetween(
             java.time.LocalDateTime start,
             java.time.LocalDateTime end

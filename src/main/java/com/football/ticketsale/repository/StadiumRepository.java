@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface StadiumRepository extends JpaRepository<StadiumEntity, UUID> {
     Optional<StadiumEntity> findByStadiumName(String stadiumName);
-    List<StadiumEntity> findByCity(CityEntity city);
+    List<StadiumEntity> findByCityEntity(CityEntity cityEntity);
 }

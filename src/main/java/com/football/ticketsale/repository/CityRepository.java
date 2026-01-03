@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CityRepository extends JpaRepository<CityEntity, String> {
-    List<CityEntity> findByCountry(CountryEntity countryEntity);
+    List<CityEntity> findByCountryEntity(CountryEntity countryEntity);
     Optional<CityEntity> findByCityName(String cityName);
 }

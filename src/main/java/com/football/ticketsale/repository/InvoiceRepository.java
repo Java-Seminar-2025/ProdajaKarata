@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, UUID> {
-    List<InvoiceEntity> findUser(UserEntity user);
+    List<InvoiceEntity> findByUserEntity(UserEntity user);
     List<InvoiceEntity> findByPaymentStatus(String paymentStatus);
     Optional<InvoiceEntity> findByPaypalPaymentId(String paypalPaymentId);
 }

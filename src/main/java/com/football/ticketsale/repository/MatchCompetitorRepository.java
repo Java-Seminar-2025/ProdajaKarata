@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface MatchCompetitorRepository extends JpaRepository<MatchCompetitorEntity, MatchCompetitorId> {
-    List<MatchCompetitorEntity> findByMatch(MatchEntity match);
-    List<MatchCompetitorEntity> findByClub(FootballClubEntity club);
+    List<MatchCompetitorEntity> findByMatchEntity(MatchEntity match);
+    List<MatchCompetitorEntity> findByClubEntity(FootballClubEntity club);
 }
