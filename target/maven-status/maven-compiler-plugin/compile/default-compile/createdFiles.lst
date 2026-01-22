@@ -28,4 +28,5 @@ com\football\ticketsale\repository\CountryRepository.class
 com\football\ticketsale\entity\FootballClubEntity.class
 com\football\ticketsale\repository\MatchCompetitorRepository.class
 com\football\ticketsale\repository\TicketTierRepository.class
+com\football\ticketsale\controller\HomeController.class
 com\football\ticketsale\entity\MatchCompetitorEntity.class

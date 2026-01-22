@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Stadium")
+@Table(name = "[Stadium]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

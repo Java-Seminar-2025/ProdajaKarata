@@ -5,7 +5,7 @@ import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;  // CORRECT import
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,18 +29,29 @@ public class AuthController {
     public String showRegistrationForm(Model model) {
         UserDto user = new UserDto();
         model.addAttribute("user", user);
-        return "signup";  // matches your HTML filename
+        return "signup";
     }
 
-    @PostMapping("/register/save")
+    @PostMapping("/signup/save")
     public String registration(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult result,
                                Model model) {
+
+        if (!userDto.getPassword().equals(userDto.getRepeatPassword())) {
+            result.rejectValue("repeatPassword", "error.user",
+                    "Passwords do not match");
+        }
 
         UserEntity existingUserEmail = userService.findUserByEmail(userDto.getEmail());
         if (existingUserEmail != null) {
             result.rejectValue("email", null,
                     "There is already an account registered with this email");
+        }
+
+        UserEntity existingUserUsername = userService.findUserByUsername(userDto.getUsername());
+        if (existingUserUsername != null) {
+            result.rejectValue("username", null,
+                    "There is already an account registered with this username");
         }
 
         if (result.hasErrors()) {

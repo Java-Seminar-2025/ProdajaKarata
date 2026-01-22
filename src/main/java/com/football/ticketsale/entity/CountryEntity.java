@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Country")
+@Table(name = "[Country]")
 public class CountryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,7 +18,6 @@ public class CountryEntity {
     @Column(name = "VAT", nullable = false)
     private Double vat;
 
-    // Constructors
     public CountryEntity() {}
 
     public CountryEntity(UUID countryUid, String countryName, Double vat) {
@@ -27,7 +26,6 @@ public class CountryEntity {
         this.vat = vat;
     }
 
-    // Getters and Setters
     public UUID getCountryUid() {
         return countryUid;
     }

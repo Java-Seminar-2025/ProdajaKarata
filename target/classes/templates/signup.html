@@ -13,7 +13,7 @@
     <div class="box"></div>
 </div>
 
-<form th:action="@{/register/save}" method="post" th:object="${user}">
+<form class="signup-form" th:action="@{/signup/save}" method="post" th:object="${user}">
     <h3>Create Account</h3>
 
     <div th:if="${param.success}">
@@ -28,9 +28,17 @@
     <input type="email" placeholder="Email" id="email" th:field="*{email}" required>
     <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
 
+    <label for="username" class="labelSignup">Username</label>
+    <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
+    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></div>
+
     <label for="password" class="labelSignup">Password</label>
     <input type="password" placeholder="Password" id="password" th:field="*{password}" required>
     <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+
+    <label for="repeat_password" class="labelSignup">Repeat password</label>
+    <input type="password" placeholder="Repeat password" id="repeat_password" th:field="*{repeatPassword}" required>
+    <div th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{repeatPassword}" class="error"></div>
 
     <button type="submit" class="signupButton">Sign Up</button>
 

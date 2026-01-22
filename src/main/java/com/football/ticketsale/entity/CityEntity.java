@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Entity
-@Table(name = "City")
+@Table(name = "[City]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

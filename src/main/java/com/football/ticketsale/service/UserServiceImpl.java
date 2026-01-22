@@ -5,6 +5,7 @@ import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.entity.CountryEntity;
 import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.repository.CountryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,12 +27,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void saveUser(UserDto userDto) {
         UserEntity user = new UserEntity();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
         user.setAuthorizationLevel("user");
+        user.setFullName(userDto.getFullName());
+        user.setPin(userDto.getPin());
 
         userRepository.save(user);
     }

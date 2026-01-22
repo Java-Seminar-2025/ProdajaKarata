@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(name = "Password_Hash", length = 60, nullable = false)
     private String passwordHash;
 
-    @Column(name = "Full_Name", length = 40, nullable = true)
+    @Column(name = "Full_Name", length = 40, nullable = false)
     private String fullName;
 
     @Pattern(regexp = "\\d{11}", message = "PIN must be exactly 11 digits")
@@ -45,7 +45,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TicketEntity> ticketEntities;
 
-    // Constructors
     public UserEntity() {}
 
     public UserEntity(UUID userUid, String username, String email, String passwordHash,
@@ -62,7 +61,6 @@ public class UserEntity {
         this.country = country;
     }
 
-    // Getters and Setters
     public UUID getUserUid() {
         return userUid;
     }

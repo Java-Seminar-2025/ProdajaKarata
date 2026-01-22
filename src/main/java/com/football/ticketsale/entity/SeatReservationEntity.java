@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Seat_Reservation")
+@Table(name = "[Seat_Reservation]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

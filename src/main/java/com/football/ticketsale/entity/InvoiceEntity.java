@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Invoice")
+@Table(name = "[Invoice]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

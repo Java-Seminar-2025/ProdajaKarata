@@ -9,6 +9,7 @@ import java.util.UUID;
 public class UserDto {
     private UUID id;
 
+    @NotEmpty(message = "Full name is required")
     private String fullName;
 
     @NotEmpty(message = "Username is required")
@@ -21,17 +22,17 @@ public class UserDto {
     @NotEmpty(message = "Password is required")
     private String password;
 
+    private String repeatPassword;
+
     @Pattern(regexp = "\\d{11}", message = "PIN must be exactly 11 digits")
     private String pin;
 
     private String countryName;
 
-    // Default constructor
     public UserDto() {}
 
-    // Constructor with all fields
     public UserDto(UUID id, String fullName, String username, String email,
-                   String password, String pin, String countryName) {
+                   String password, String repeatPassword, String pin, String countryName) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
@@ -41,7 +42,6 @@ public class UserDto {
         this.countryName = countryName;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -81,6 +81,15 @@ public class UserDto {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
+    }
+
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+
 
     public String getPin() {
         return pin;
