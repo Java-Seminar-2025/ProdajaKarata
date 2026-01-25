@@ -12,27 +12,48 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "[Match]")
+@Table(name = "`match`")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchEntity {
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "Match_UID", updatable = false, nullable = false)
+    @GeneratedValue
+    @Column(name = "match_uid", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID matchUid;
 
-    @Column(name = "Match_Datetime")
+    @Column(name = "match_datetime")
     private LocalDateTime matchDatetime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Stadium",
-            foreignKey = @ForeignKey(name = "FK_Match_Stadium"))
-    private StadiumEntity stadiumEntity;
-
-    @Column(name = "Base_Ticket_Price_USD", precision = 10, scale = 2, nullable = false)
+    @Column(name = "base_ticket_price_usd", precision = 10, scale = 2, nullable = false)
     private BigDecimal baseTicketPriceUsd;
 
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SeatReservationEntity> seatReservationEntities;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "home_club_uid", columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_match_home_club")
+    )
+    private FootballClubEntity homeTeam;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "away_club_uid", columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_match_away_club")
+    )
+    private FootballClubEntity awayTeam;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "stadium_uid",
+            foreignKey = @ForeignKey(name = "fk_match_stadium")
+    )
+    private StadiumEntity stadium;
+
+    @OneToMany(
+            mappedBy = "match",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<SeatReservationEntity> seatReservations;
 }

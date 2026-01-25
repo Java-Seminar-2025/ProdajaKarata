@@ -4,30 +4,27 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "[Stadium]")
+@Table(name = "stadium")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StadiumEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "Stadium_UID", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "stadium_uid", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID stadiumUid;
 
-    @Column(name = "Stadium_Name", length = 20, nullable = false)
+    @Column(name = "stadium_name", length = 20, nullable = false)
     private String stadiumName;
 
-    @Column(name = "Number_Of_Seats", nullable = false)
+    @Column(name = "number_of_seats", nullable = false)
     private Integer numberOfSeats;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "City",
-                foreignKey = @ForeignKey(name = "FK_Stadium_City"))
+    @JoinColumn(name = "city_uid", referencedColumnName = "city_uid")
     private CityEntity cityEntity;
 }

@@ -36,7 +36,3 @@ public class HomeController {
     }
 }
 
-// SecurityContex
-// @AuthenticationPrincipal
-// thymeleaf-extras-springsecurity6
-// SecurityContexHolder
