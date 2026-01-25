@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CityRepository extends JpaRepository<CityEntity, String> {
-    List<CityEntity> findByCountry(CountryEntity countryEntity);
+public interface CityRepository extends JpaRepository<CityEntity, UUID> {
+    List<CityEntity> findByCountry(CountryEntity country);
     Optional<CityEntity> findByCityName(String cityName);
 }

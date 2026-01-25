@@ -10,19 +10,20 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Football_Club")
+@Table(name = "football_club")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FootballClubEntity {
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "Club_UID", updatable = false, nullable = false)
+    @GeneratedValue
+    @Column(name = "club_uid", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID clubUid;
 
-    @Column(name = "Club_Name", length = 20, nullable = false)
+    @Column(name = "club_name", length = 20, nullable = false)
     private String clubName;
 
-    @Column(name = "Total_Players", nullable = false)
+    @Column(name = "total_players", nullable = false)
     private Integer totalPlayers;
 }

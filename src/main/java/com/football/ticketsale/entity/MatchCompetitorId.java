@@ -11,6 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchCompetitorId implements Serializable {
-    private UUID match;
-    private UUID club;
+    private UUID matchEntity;
+    private UUID clubEntity;
 }

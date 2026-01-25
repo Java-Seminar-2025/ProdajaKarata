@@ -5,48 +5,46 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Ticket")
+@Table(name = "ticket")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "Ticket_UID", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "ticket_uid", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID ticketUid;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "User_UID", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_Ticket_User"))
+    @JoinColumn(name = "user_uid", nullable = false, columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_ticket_user"))
     private UserEntity userEntity;
 
-    @Column(name = "Owner_Name", length = 20, nullable = false)
+    @Column(name = "owner_name", length = 20, nullable = false)
     private String ownerName;
 
     @Pattern(regexp = "\\d{11}", message = "PIN must be exactly 11 digits")
-    @Column(name = "PIN", length = 11, nullable = false)
+    @Column(name = "pin", length = 11, nullable = false)
     private String pin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Tier",
-            foreignKey = @ForeignKey(name = "FK_Ticket_TicketTier"))
+    @JoinColumn(name = "tier_uid", referencedColumnName = "tier_uid")
     private TicketTierEntity tierEntity;
 
-    @Column(name = "Status", length = 20)
+    @Column(name = "status", length = 20)
     private String status = "pending";
 
-    @Column(name = "Creation_Datetime", updatable = false)
+    @Column(name = "creation_datetime", updatable = false)
     private LocalDateTime creationDatetime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Invoice_ID",
-            foreignKey = @ForeignKey(name = "FK_Ticket_Invoice"))
+    @JoinColumn(name = "invoice_uid", columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_ticket_invoice"))
     private InvoiceEntity invoiceEntity;
 
     @PrePersist

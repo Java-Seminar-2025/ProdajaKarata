@@ -2,12 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Football Ticket Sale App</title>
-
+    <title>Football Ticket Sale App - Login</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -15,11 +13,19 @@
     <div class="box"></div>
 </div>
 
-<form th:action="@{/login}" method="post">
+<form class="login-form" th:action="@{/login}" method="post">
     <h3>Welcome Back</h3>
 
+    <div th:if="${param.success}">
+        <div class="alert alert-success">Registration successful! Please login.</div>
+    </div>
+
+    <div th:if="${param.error}">
+        <div class="alert alert-error">Invalid username or password.</div>
+    </div>
+
     <label for="username" class="labelLogin">Username</label>
-    <input type="email" placeholder="Email" id="username" name="username" required>
+    <input type="text" placeholder="Username" id="username" name="username" required>
 
     <label for="password" class="labelLogin">Password</label>
     <input type="password" placeholder="Password" id="password" name="password" required>
@@ -27,7 +33,7 @@
     <button type="submit">Log In</button>
 
     <p>Don't have an account?
-        <a class="link" href="signup.html">Sign up</a>
+        <a class="link" th:href="@{/signup}">Sign up</a>
     </p>
 </form>
 </body>

@@ -1,5 +1,6 @@
 package com.football.ticketsale.repository;
 
+import com.football.ticketsale.entity.FootballClubEntity;
 import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface MatchRepository extends JpaRepository<MatchEntity, UUID> {
             java.time.LocalDateTime start,
             java.time.LocalDateTime end
     );
+    List<MatchEntity> findByHomeTeamOrAwayTeam(FootballClubEntity homeTeam, FootballClubEntity awayTeam); // moze se napisat ka query da se dva puta ne pise tipa hajduk, hajduk za dohvatit sve utakmice
 }
