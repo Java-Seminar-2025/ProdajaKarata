@@ -61,9 +61,11 @@
         <header>
             <h1>Upcoming games</h1>
 
-            <form th:action="@{/home}" method="get" style="display:flex; gap:12px; align-items:center;">
-                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search club or league code (e.g. PL)...">
-                <button type="submit">Search</button>
+            <form th:action="@{/home}" method="get" style="display:flex; gap:0; align-items:center; margin-left:auto;">
+                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search...">
+                <button class="btn-search" type="submit">
+                    <ion-icon name="search-circle-outline"></ion-icon>
+                </button>
             </form>
             <div class="basket">
                 <ion-icon name="cart-outline"></ion-icon>
