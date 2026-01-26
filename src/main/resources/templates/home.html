@@ -22,36 +22,26 @@
             <li>
                 <a href="#" class="active">
                     <ion-icon name="compass-outline"></ion-icon>
-                    Otkrij
+                    Discover
                 </a>
             </li>
             <li>
                 <a href="#">
                     <ion-icon name="ticket-outline"></ion-icon>
-                    Moje ulaznice
+                    My Tickets
                 </a>
             </li>
-            <li class="settings-item">
-                <a href="#" class="settings-link">
+            <li>
+                <a href="#">
                     <ion-icon name="settings-outline"></ion-icon>
-                    Postavke
-                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
+                    Settings
                 </a>
-                <div class="dropdown-menu">
-                    <a th:href="@{/settings}">
-                        <ion-icon name="person-circle-outline"></ion-icon>
-                        Postavke računa
-                    </a>
-                    <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
-                        Odjavi se
-                    </a>
-                </div>
             </li>
         </ul>
 
         <div class="user-profile">
             <div class="avatar"></div> <div class="user-info">
-            <span class="username" th:text="${user.username}"></span>
+            <span class="username" th:text="${username}"></span>
             <span class="role" th:text="${role}"></span>
         </div>
         </div>
@@ -65,9 +55,6 @@
                 <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search club or league code (e.g. PL)...">
                 <button type="submit">Search</button>
             </form>
-            <div class="basket">
-                <ion-icon name="cart-outline"></ion-icon>
-            </div>
         </header>
 
         <div class="cards-grid">
