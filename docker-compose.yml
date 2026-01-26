@@ -5,6 +5,8 @@ services:
     image: mysql:8.0
     container_name: football-mysql
     environment:
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
       MYSQL_ROOT_PASSWORD: "tIN**613"
       MYSQL_DATABASE: "football_ticket_sale_db"
     ports:
