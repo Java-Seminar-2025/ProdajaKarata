@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Tickets</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+
+<h1>My Tickets</h1>
+
+<div th:if="${#lists.isEmpty(tickets)}">
+    <p>No purchased tickets yet.</p>
+</div>
+
+<div th:each="t : ${tickets}" style="border:1px solid #ccc; padding:12px; border-radius:8px; margin-bottom:10px;">
+    <p><b>Status:</b> <span th:text="${t.status}"></span></p>
+    <p><b>Owner:</b> <span th:text="${t.ownerName}"></span></p>
+    <p><b>Seat:</b> <span th:text="${seatByTicket[t.ticketUid]}"></span></p>
+    <p><b>Invoice:</b> <span th:text="${t.invoiceEntity != null ? t.invoiceEntity.invoiceUid : 'N/A'}"></span></p>
+</div>
+
+<a href="/home">Back to Home</a>
+
+</body>
+</html>
