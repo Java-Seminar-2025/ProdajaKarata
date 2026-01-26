@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface FootballClubRepository extends JpaRepository<FootballClubEntity, UUID> {
     Optional<FootballClubEntity> findByClubName(String clubName);
+    boolean existsByClubName(String clubName);
+    Optional<FootballClubEntity> findBySourceAndSourceTeamId(String source, String sourceTeamId);
 }

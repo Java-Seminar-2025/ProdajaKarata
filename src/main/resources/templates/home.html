@@ -15,7 +15,7 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <h2>TicketSaleApp</h2>
+            <h2>KupiKartu</h2>
         </div>
 
         <ul class="menu-items">
@@ -50,24 +50,22 @@
     <main class="main-content">
         <header>
             <h1>Upcoming games</h1>
-            <input type="text" class="search-bar" placeholder="Search...">
+
+            <form th:action="@{/home}" method="get" style="display:flex; gap:12px; align-items:center;">
+                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search club or league code (e.g. PL)...">
+                <button type="submit">Search</button>
+            </form>
         </header>
 
         <div class="cards-grid">
-            <div class="card">
-                <h3>ALDO v DYJ</h3>
-                <p>Datum: 12.05.2024</p>
-                <button>Buy Ticket</button>
-            </div>
-            <div class="card">
-                <h3>BAN v HUR</h3>
-                <p>Datum: 15.06.2024</p>
-                <button>Buy Ticket</button>
-            </div>
-            <div class="card">
-                <h3>USF v PLA</h3>
-                <p>Datum: 20.07.2024</p>
-                <button>Buy Ticket</button>
+            <div class="card" th:each="m : ${matches}">
+                <h3 th:text="${m.homeTeam.clubName} + ' vs ' + ${m.awayTeam.clubName}"></h3>
+                <p th:text="'Date: ' + ${#temporals.format(m.matchDatetime, 'dd.MM.yyyy HH:mm')}"></p>
+                <p th:if="${m.competitionCode != null}" th:text="'League: ' + ${m.competitionCode}"></p>
+                <p th:if="${m.status != null}" th:text="'Status: ' + ${m.status}"></p>
+                <a th:href="@{'/checkout/' + ${m.matchUid}}">
+                    <button th:if="${m.status == 'TIMED'}">Buy Ticket</button>
+                </a>
             </div>
         </div>
     </main>

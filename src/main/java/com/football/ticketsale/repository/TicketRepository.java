@@ -12,8 +12,11 @@ import java.util.UUID;
 
 @Repository
 public interface TicketRepository extends JpaRepository<TicketEntity, UUID> {
-    List<TicketEntity> findByUserEntity(UserEntity user);
+    List<TicketEntity> findByUserEntity(UserEntity userEntity);
     List<TicketEntity> findByStatus(String status);
-    List<TicketEntity> findByInvoiceEntity(InvoiceEntity invoice);
-    List<TicketEntity> findByTierEntity(TicketTierEntity tier);
+    List<TicketEntity> findByInvoiceEntity(InvoiceEntity invoiceEntity);
+    List<TicketEntity> findByTierEntity(TicketTierEntity tierEntity);
+    List<TicketEntity> findByUserEntityAndStatus(UserEntity userEntity, String status);
+
 }
+

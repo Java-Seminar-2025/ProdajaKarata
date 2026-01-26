@@ -20,9 +20,9 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @GetMapping("/index")
+    @GetMapping("/welcome")
     public String home() {
-        return "index";
+        return "welcome";
     }
 
     @GetMapping("/signup")

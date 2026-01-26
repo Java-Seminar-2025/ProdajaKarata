@@ -9,24 +9,30 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "[Seat_Reservation]")
+@Table(name = "seat_reservation")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(SeatReservationId.class)
 public class SeatReservationEntity {
+
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Match_UID", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_SeatReservation_Match"))
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "match_uid", columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_seat_reservation_match")
+    )
     private MatchEntity match;
 
     @Id
-    @Column(name = "Seat_Number", nullable = false)
+    @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Ticket_UID", nullable = false, unique = true,
-            foreignKey = @ForeignKey(name = "FK_SeatReservation_Ticket"))
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "ticket_uid",
+            unique = true, columnDefinition = "BINARY(16)",
+            foreignKey = @ForeignKey(name = "fk_seat_reservation_ticket")
+    )
     private TicketEntity ticket;
 }

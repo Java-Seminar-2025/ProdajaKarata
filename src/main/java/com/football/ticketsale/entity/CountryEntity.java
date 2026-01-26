@@ -5,26 +5,27 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "[Country]")
+@Table(name = "country")
 public class CountryEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Country_UID", updatable = false, nullable = false)
+    @GeneratedValue
+    @Column(name = "country_uid", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID countryUid;
 
-    @Column(name = "Country_Name", length = 20, nullable = false)
+    @Column(name = "country_name", length = 20, nullable = false)
     private String countryName;
 
-    @Column(name = "VAT", nullable = false)
+    @Column(name = "vat", nullable = false)
     private Double vat;
 
-    public CountryEntity() {}
+    protected CountryEntity() {} // JPA-safe
 
-    public CountryEntity(UUID countryUid, String countryName, Double vat) {
-        this.countryUid = countryUid;
+    public CountryEntity(String countryName, Double vat) {
         this.countryName = countryName;
         this.vat = vat;
     }
+
 
     public UUID getCountryUid() {
         return countryUid;
