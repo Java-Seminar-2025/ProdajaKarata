@@ -16,5 +16,7 @@ public interface TicketRepository extends JpaRepository<TicketEntity, UUID> {
     List<TicketEntity> findByStatus(String status);
     List<TicketEntity> findByInvoiceEntity(InvoiceEntity invoiceEntity);
     List<TicketEntity> findByTierEntity(TicketTierEntity tierEntity);
+    List<TicketEntity> findByUserEntityAndStatus(UserEntity userEntity, String status);
+
 }
 

@@ -23,7 +23,7 @@ public class InvoiceEntity {
     @Column(name = "invoice_uid", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID invoiceUid;
 
-    @Column(name = "paypal_payment_id", length = 40, nullable = false)
+    @Column(name = "paypal_payment_id", length = 100, nullable = false)
     private String paypalPaymentId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

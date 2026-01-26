@@ -18,7 +18,7 @@ public class StadiumEntity {
     @Column(name = "stadium_uid", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID stadiumUid;
 
-    @Column(name = "stadium_name", length = 20, nullable = false)
+    @Column(name = "stadium_name", length = 100, nullable = false)
     private String stadiumName;
 
     @Column(name = "number_of_seats", nullable = false)

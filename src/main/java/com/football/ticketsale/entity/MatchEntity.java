@@ -29,6 +29,18 @@ public class MatchEntity {
     @Column(name = "base_ticket_price_usd", precision = 10, scale = 2, nullable = false)
     private BigDecimal baseTicketPriceUsd;
 
+    @Column(name = "source", length = 30)
+    private String source;
+
+    @Column(name = "source_match_id", length = 40)
+    private String sourceMatchId;
+
+    @Column(name = "competition_code", length = 20)
+    private String competitionCode;
+
+    @Column(name = "status", length = 20)
+    private String status;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "home_club_uid", columnDefinition = "BINARY(16)",
@@ -55,5 +67,6 @@ public class MatchEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+
     private Set<SeatReservationEntity> seatReservations;
 }

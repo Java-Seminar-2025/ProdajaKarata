@@ -21,8 +21,14 @@ public class FootballClubEntity {
     @Column(name = "club_uid", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID clubUid;
 
-    @Column(name = "club_name", length = 20, nullable = false)
+    @Column(name = "club_name", length = 100, nullable = false)
     private String clubName;
+
+    @Column(name = "source", length = 30)
+    private String source;
+
+    @Column(name = "source_team_id", length = 40)
+    private String sourceTeamId;
 
     @Column(name = "total_players", nullable = false)
     private Integer totalPlayers;

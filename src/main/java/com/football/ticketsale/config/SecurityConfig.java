@@ -23,8 +23,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signup/**", "/register/**", "/welcome", "/css/**", "/js/**", "/api/**").permitAll()
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/signup/**", "/register/**", "/welcome", "/css/**", "/js/**", "/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/matches/**").permitAll()
+                        .requestMatchers("/checkout/**", "/my-tickets").permitAll()   //.authenticated()
+                        .requestMatchers("/api/admin/**").permitAll()  //.authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

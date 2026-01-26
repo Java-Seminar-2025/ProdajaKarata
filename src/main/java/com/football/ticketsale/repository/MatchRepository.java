@@ -5,9 +5,12 @@ import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import java.util.List;
 import java.util.UUID;
+
 
 @Repository
 public interface MatchRepository extends JpaRepository<MatchEntity, UUID> {
@@ -17,4 +20,8 @@ public interface MatchRepository extends JpaRepository<MatchEntity, UUID> {
             java.time.LocalDateTime end
     );
     List<MatchEntity> findByHomeTeamOrAwayTeam(FootballClubEntity homeTeam, FootballClubEntity awayTeam); // moze se napisat ka query da se dva puta ne pise tipa hajduk, hajduk za dohvatit sve utakmice
+
+    Optional<MatchEntity> findBySourceAndSourceMatchId(String source, String sourceMatchId);
+    List<MatchEntity> findByMatchDatetimeAfterOrderByMatchDatetimeAsc(LocalDateTime from);
+
 }
