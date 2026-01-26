@@ -5,7 +5,9 @@ import com.football.ticketsale.dto.checkout.ReserveSectionRequestDto;
 import com.football.ticketsale.dto.checkout.ReserveSectionResponseDto;
 import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumSectionEntity;
+import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.repository.MatchRepository;
+import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.service.CheckoutService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,14 +25,19 @@ public class CheckoutController {
 
     private final CheckoutService checkoutService;
     private final MatchRepository matchRepository;
+    private final UserRepository userRepository;
 
-    public CheckoutController(CheckoutService checkoutService, MatchRepository matchRepository) {
+    public CheckoutController(CheckoutService checkoutService, MatchRepository matchRepository, UserRepository userRepository) {
         this.checkoutService = checkoutService;
         this.matchRepository = matchRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/checkout/{matchId}")
-    public String checkoutPage(@PathVariable UUID matchId, Model model) {
+    public String checkoutPage(@PathVariable UUID matchId, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        UserEntity user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
         MatchEntity match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
@@ -43,6 +50,8 @@ public class CheckoutController {
                         LinkedHashMap::new,
                         Collectors.toList()
                 ));
+
+        model.addAttribute("user", user);
 
         model.addAttribute("match", match);
         model.addAttribute("sectionsByStand", sectionsByStand);

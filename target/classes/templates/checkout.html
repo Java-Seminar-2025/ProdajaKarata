@@ -17,13 +17,13 @@
 
         <ul class="menu-items">
             <li>
-                <a href="#" class="active">
+                <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
                     Otkrij
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a th:href="@{/my_tickets}">
                     <ion-icon name="ticket-outline"></ion-icon>
                     Moje ulaznice
                 </a>
@@ -50,7 +50,7 @@
             <div class="avatar"></div>
             <div class="user-info">
                 <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
-                <span class="role">Korisnik</span>
+                <span class="role" th:text="${user.authorizationLevel}"></span>
             </div>
         </div>
     </nav>
@@ -114,7 +114,6 @@
                                                  th:attr="data-code=${sec.sectionCode}, onclick='selectSection(\'' + ${sec.sectionCode} + '\')'"
                                                  th:text="${sec.sectionCode}">
                                             </div>
-
                                         </th:block>
                                     </th:block>
                                 </div>

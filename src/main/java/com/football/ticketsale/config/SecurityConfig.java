@@ -27,7 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/signup/**", "/register/**", "/welcome", "/css/**", "/js/**", "/api/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/matches/**").permitAll()
-                        .requestMatchers("/checkout/**", "/my-tickets").permitAll()   //.authenticated()
+                        .requestMatchers("/checkout/**", "/my_tickets").permitAll()   //.authenticated()
                         .requestMatchers("/api/admin/**").permitAll()  //.authenticated()
                         .anyRequest().authenticated()
                 )

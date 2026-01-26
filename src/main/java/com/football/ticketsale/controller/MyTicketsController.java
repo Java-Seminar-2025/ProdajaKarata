@@ -31,7 +31,7 @@ public class MyTicketsController {
         this.seatReservationRepository = seatReservationRepository;
     }
 
-    @GetMapping("/my-tickets")
+    @GetMapping("/my_tickets")
     public String myTickets(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         UserEntity user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -45,6 +45,7 @@ public class MyTicketsController {
                     .ifPresent(seat -> seatByTicket.put(t.getTicketUid(), seat));
         }
 
+        model.addAttribute("user", user);
         model.addAttribute("tickets", paid);
         model.addAttribute("seatByTicket", seatByTicket);
 
