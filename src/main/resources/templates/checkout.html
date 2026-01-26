@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+
+<h1>Checkout</h1>
+
+<div>
+    <h2 th:text="${match.homeTeam.clubName} + ' vs ' + ${match.awayTeam.clubName}"></h2>
+    <p th:text="'Date: ' + ${#temporals.format(match.matchDatetime, 'dd.MM.yyyy HH:mm')}"></p>
+    <p th:text="'Base price: $' + ${match.baseTicketPriceUsd}"></p>
+</div>
+
+<hr/>
+
+<h3>Select section + quantity</h3>
+
+<form th:action="@{/checkout/reserve}" method="post">
+
+    <input type="hidden" name="matchId" th:value="${match.matchUid}" />
+
+    <label>Owner name:</label>
+    <input type="text" name="ownerName" required/>
+    <br/>
+
+    <label>PIN (11 digits):</label>
+    <input type="text" name="pin" required/>
+    <br/>
+
+    <label>Quantity (1-6):</label>
+    <input type="number" name="quantity" min="1" max="6" required/>
+    <br/><br/>
+
+    <div th:each="entry : ${sectionsByStand}">
+        <h4 th:text="${entry.key}"></h4>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <label th:each="sec : ${entry.value}" style="border:1px solid #ccc; padding:6px 10px; border-radius:6px;">
+                <input type="radio" name="sectionCode" th:value="${sec.sectionCode}" required/>
+                <span th:text="${sec.sectionCode}"></span>
+                <span th:text="' (' + ${availability[sec.sectionUid]} + ' avail)'"></span>
+            </label>
+        </div>
+    </div>
+
+    <br/>
+    <button type="submit">Reserve</button>
+</form>
+
+
+<hr/>
+
+<div th:if="${reserved != null}">
+    <h3>Reserved</h3>
+    <p th:text="'Section: ' + ${reserved.sectionCode} + ', qty: ' + ${reserved.quantity} + ', total: $' + ${reserved.totalPrice}"></p>
+
+    <ul>
+        <li th:each="t : ${reserved.tickets}"
+            th:text="'Seat ' + ${t.seatNumber} + ' (ticketId ' + ${t.ticketId} + ')'"></li>
+    </ul>
+
+    <h3>Mock payment</h3>
+    <form th:action="@{/checkout/pay}" method="post" th:object="${payRequest}">
+        <!-- send ticket ids -->
+        <div th:each="t : ${reserved.tickets}">
+            <input type="hidden" name="ticketIds" th:value="${t.ticketId}"/>
+        </div>
+
+        <label>Payment method:</label>
+        <select th:field="*{paymentMethod}">
+            <option value="MOCK_CARD">Mock Card</option>
+            <option value="PAYPAL">PayPal (mock)</option>
+        </select>
+        <br/>
+
+        <label>Cardholder name:</label>
+        <input type="text" th:field="*{cardholderName}"/>
+        <br/>
+
+        <label>Last4:</label>
+        <input type="text" th:field="*{last4}" maxlength="4"/>
+        <br/><br/>
+
+        <button type="submit">Pay</button>
+    </form>
+</div>
+
+</body>
+</html>

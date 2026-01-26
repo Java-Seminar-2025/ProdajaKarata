@@ -1,0 +1,2 @@
+ALTER TABLE stadium
+MODIFY stadium_name VARCHAR(100) NOT NULL;

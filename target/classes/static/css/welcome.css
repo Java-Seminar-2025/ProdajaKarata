@@ -1,0 +1,148 @@
+*, *:before, *:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #141514;
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+a { text-decoration: none; }
+
+.glow {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(#a8ff78, transparent 60%);
+    opacity: 0.15;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(80px);
+}
+
+.top-left { top: -100px; left: -100px; }
+.bottom-right { bottom: -100px; right: -100px; background: radial-gradient(#78ffd6, transparent 60%); }
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(20, 21, 20, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(to right, #a8ff78, #78ffd6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+}
+
+.nav-links a {
+    color: #e5e5e5;
+    font-size: 16px;
+    font-weight: 400;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #a8ff78;
+    text-shadow: 0 0 10px rgba(168, 255, 120, 0.5);
+}
+
+.btn-login {
+    color: #141514;
+    background-color: #a8ff78;
+    padding: 8px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #78ffd6;
+    box-shadow: 0 0 15px rgba(120, 255, 214, 0.4);
+}
+
+.main {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%; /* Bočni razmak */
+}
+
+.main-content {
+    max-width: 600px;
+}
+
+.main-content h1 {
+    font-size: 64px;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.highlight {
+    color: #a8ff78;
+}
+
+.main-content p {
+    font-size: 18px;
+    color: #a8a8a8;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.main-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-signup {
+    padding: 15px 40px;
+    background-image: linear-gradient(to right, #a8ff78, #78ffd6);
+    color: #141514;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+
+.btn-info {
+    padding: 15px 40px;
+    background: transparent;
+    border: 2px solid rgba(168, 255, 120, 0.5);
+    color: #a8ff78;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.btn-signup:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(168, 255, 120, 0.3);
+}
+
+.btn-info:hover {
+    background: rgba(168, 255, 120, 0.1);
+    border-color: #a8ff78;
+}

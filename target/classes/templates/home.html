@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style_new.css}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>KupiKartu</h2>
+        </div>
+
+        <ul class="menu-items">
+            <li>
+                <a href="#" class="active">
+                    <ion-icon name="compass-outline"></ion-icon>
+                    Discover
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                    My Tickets
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="avatar"></div> <div class="user-info">
+            <span class="username" th:text="${username}"></span>
+            <span class="role" th:text="${role}"></span>
+        </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <h1>Upcoming games</h1>
+
+            <form th:action="@{/home}" method="get" style="display:flex; gap:12px; align-items:center;">
+                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search club or league code (e.g. PL)...">
+                <button type="submit">Search</button>
+            </form>
+        </header>
+
+        <div class="cards-grid">
+            <div class="card" th:each="m : ${matches}">
+                <h3 th:text="${m.homeTeam.clubName} + ' vs ' + ${m.awayTeam.clubName}"></h3>
+                <p th:text="'Date: ' + ${#temporals.format(m.matchDatetime, 'dd.MM.yyyy HH:mm')}"></p>
+                <p th:if="${m.competitionCode != null}" th:text="'League: ' + ${m.competitionCode}"></p>
+                <p th:if="${m.status != null}" th:text="'Status: ' + ${m.status}"></p>
+                <a th:href="@{'/checkout/' + ${m.matchUid}}">
+                    <button th:if="${m.status == 'TIMED'}">Buy Ticket</button>
+                </a>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
