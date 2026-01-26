@@ -20,7 +20,7 @@
 
         <ul class="menu-items">
             <li>
-                <a href="#" class="active">
+                <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
                     Otkrij
                 </a>
@@ -31,14 +31,16 @@
                     Moje ulaznice
                 </a>
             </li>
+
             <li class="settings-item">
-                <a href="#" class="settings-link">
+                <a href="#" class="settings-link active">
                     <ion-icon name="settings-outline"></ion-icon>
                     Postavke
                     <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
                 </a>
+
                 <div class="dropdown-menu">
-                    <a th:href="@{/settings}">
+                    <a href="#">
                         <ion-icon name="person-circle-outline"></ion-icon>
                         Postavke računa
                     </a>
@@ -52,35 +54,51 @@
         <div class="user-profile">
             <div class="avatar"></div> <div class="user-info">
             <span class="username" th:text="${user.username}"></span>
-            <span class="role" th:text="${role}"></span>
+            <span class="role" th:text="${role}">User</span>
         </div>
         </div>
     </nav>
 
     <main class="main-content">
         <header>
-            <h1>Upcoming games</h1>
-
-            <form th:action="@{/home}" method="get" style="display:flex; gap:12px; align-items:center;">
-                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search club or league code (e.g. PL)...">
-                <button type="submit">Search</button>
-            </form>
-            <div class="basket">
-                <ion-icon name="cart-outline"></ion-icon>
-            </div>
+            <h1>Postavke računa</h1>
         </header>
 
-        <div class="cards-grid">
-            <div class="card" th:each="m : ${matches}">
-                <h3 th:text="${m.homeTeam.clubName} + ' vs ' + ${m.awayTeam.clubName}"></h3>
-                <p th:text="'Date: ' + ${#temporals.format(m.matchDatetime, 'dd.MM.yyyy HH:mm')}"></p>
-                <p th:if="${m.competitionCode != null}" th:text="'League: ' + ${m.competitionCode}"></p>
-                <p th:if="${m.status != null}" th:text="'Status: ' + ${m.status}"></p>
-                <a th:href="@{'/checkout/' + ${m.matchUid}}">
-                    <button th:if="${m.status == 'TIMED'}">Buy Ticket</button>
-                </a>
+        <div class="settings-container">
+            <div class="settings-card">
+                <div class="card-header">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    <h3>Uredi profil</h3>
+                </div>
+                <form class="settings-form" th:action="@{/settings/update}" th:object="${userProfileDto}" method="post">
+                    <div class="input-group">
+                        <label>Ime i prezime</label>
+                        <input type="text" th:field="*{fullName}" placeholder="Enter full name">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nova lozinka</label>
+                        <input type="password" th:field="*{newPassword}" placeholder="Unesite novu lozinka">
+                    </div>
+                    <div class="input-group">
+                        <label>Ponovite lozinku</label>
+                        <input type="password" th:field="*{confirmPassword}" placeholder="Ponovite lozinku">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" th:field="*{email}" placeholder="Enter email">
+                    </div>
+
+                    <button type="submit" class="save-btn">Sačuvaj promjene</button>
+
+                    <button type="button" class="delete-account-btn">
+                        <ion-icon name="trash-outline"></ion-icon>
+                        Izbriši profil
+                    </button>
+                </form>
             </div>
-        </div>
+            </div>
     </main>
 
 </div>
@@ -89,3 +107,4 @@
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
+
