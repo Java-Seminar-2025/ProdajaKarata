@@ -6,15 +6,6 @@
     <title>Checkout - KupiKartu</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style_new.css}">
-
-    <style>
-        .radio-card input[type="radio"] {
-            opacity: 0;
-            position: absolute;
-            width: 0;
-            height: 0;
-        }
-    </style>
 </head>
 <body>
 <div class="dashboard-container">
@@ -65,7 +56,6 @@
     </nav>
 
     <main class="main-content">
-
         <div class="checkout-wrapper">
 
             <div class="checkout-header">
@@ -80,9 +70,9 @@
             <div class="separator"></div>
 
             <div th:if="${reserved == null}">
-                <h3>Select section + quantity</h3>
+                <h3 style="text-align: center; margin-bottom: 30px;">Select section + quantity</h3>
 
-                <form th:action="@{/checkout/reserve}" method="post" th:object="${reserveRequest}" class="checkout-form">
+                <form th:action="@{/checkout/reserve}" method="post" th:object="${reserveRequest}" class="checkout-form" style="max-width: 600px; margin: 0 auto;">
 
                     <input type="hidden" name="matchId" th:value="${match.matchUid}" />
 
@@ -102,25 +92,60 @@
                         <input type="number" name="quantity" min="1" max="6" value="1" required/>
                     </div>
 
-                    <div class="sections-container">
-                        <div th:each="entry : ${sectionsByStand}" class="stand-group">
-                            <h4 th:text="${entry.key}"></h4>
-                            <div class="radio-grid">
-                                <label th:each="sec : ${entry.value}" class="radio-card">
-                                    <input type="radio" th:field="*{sectionCode}" th:value="${sec.sectionCode}" required/>
-                                    <span class="code" th:text="${sec.sectionCode}"></span>
-                                    <span class="avail" th:text="${availability[sec.sectionUid]} + ' seats left'"></span>
-                                </label>
+                    <div class="stadium-selection-area">
+                        <label style="display:block; margin-bottom: 15px; color: #888; text-align: center;">Tap a section on the stadium</label>
+
+                        <div class="stadium-wrapper">
+                            <div class="stadium-base">
+                                <div class="stands-ring"></div>
+                                <div class="track-oval"></div>
+                                <div class="pitch">
+                                    <div class="mid-line"></div>
+                                    <div class="center-circle"></div>
+                                    <div class="penalty-area left"></div>
+                                    <div class="penalty-area right"></div>
+                                </div>
+                                <div class="interactive-overlay">
+                                    <th:block th:each="entry : ${sectionsByStand}">
+                                        <th:block th:each="sec : ${entry.value}">
+
+                                            <div class="section-marker"
+                                                 th:classappend="${'pos-' + sec.sectionCode}"
+                                                 th:attr="data-code=${sec.sectionCode}, onclick='selectSection(\'' + ${sec.sectionCode} + '\')'"
+                                                 th:text="${sec.sectionCode}">
+                                            </div>
+
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="selected-info-box">
+                            <span class="info-label">Selected:</span>
+                            <span id="displaySelectedCode" class="info-value">-</span>
+                            <span id="displaySelectedAvail" class="info-sub"></span>
+                        </div>
+                    </div>
+
+                    <div class="sections-list-hidden">
+                        <div th:each="entry : ${sectionsByStand}">
+                            <div th:each="sec : ${entry.value}">
+                                <input type="radio"
+                                       th:field="*{sectionCode}"
+                                       th:value="${sec.sectionCode}"
+                                       th:id="'radio-' + ${sec.sectionCode}"
+                                       th:data-avail="${availability[sec.sectionUid]}"
+                                       required/>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="save-btn">Reserve Tickets</button>
+                    <button type="submit" class="save-btn" style="margin-top: 30px;">Reserve Tickets</button>
                 </form>
             </div>
 
             <div th:if="${reserved != null}" class="payment-section">
-
                 <div class="success-box">
                     <ion-icon name="checkmark-circle-outline"></ion-icon>
                     <div>
@@ -173,5 +198,30 @@
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function selectSection(code) {
+        const radio = document.getElementById('radio-' + code);
+        if (!radio) return;
+
+        radio.click();
+
+        document.querySelectorAll('.section-marker').forEach(el => {
+            el.classList.remove('selected');
+            if (el.getAttribute('data-code') === code) {
+                el.classList.add('selected');
+            }
+        });
+
+        const avail = radio.getAttribute('data-avail');
+        const codeDisplay = document.getElementById('displaySelectedCode');
+        const availDisplay = document.getElementById('displaySelectedAvail');
+
+        codeDisplay.innerText = "Section " + code;
+        codeDisplay.style.color = "#a8ff78";
+        availDisplay.innerText = "(" + avail + " seats left)";
+    }
+</script>
+
 </body>
 </html>
