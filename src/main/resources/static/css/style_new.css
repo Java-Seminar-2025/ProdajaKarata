@@ -110,7 +110,6 @@ body {
 
 header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
 }
@@ -121,6 +120,9 @@ header h1 {
 }
 
 .search-bar {
+    margin-left: auto;
+    margin-right: 20px;
+
     background-color: rgba(255,255,255,0.07);
     border: none;
     padding: 10px 20px;
@@ -169,4 +171,205 @@ header h1 {
     color: #141514;
     font-weight: 600;
     cursor: pointer;
+}
+
+.settings-item {
+    position: relative;
+}
+
+.arrow-icon {
+    margin-left: auto;
+    font-size: 14px;
+    transition: transform 0.3s;
+}
+
+.settings-item:hover .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px 0;
+    z-index: 100;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.settings-item:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu a {
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #b0b0b0;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background-color: rgba(168, 255, 120, 0.1);
+    color: #a8ff78;
+}
+
+.dropdown-menu .sign-out:hover {
+    color: #ff7878;
+    background-color: rgba(255, 120, 120, 0.1);
+}
+
+.dropdown-menu a ion-icon {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.basket {
+    font-size: 25px;
+    color: #a8ff78;
+
+    margin-right: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.basket:hover {
+    color: #78ffd6;
+}
+
+// za postavke korisnika
+
+.settings-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.settings-card {
+    flex: 1;
+    min-width: 300px;
+    background-color: rgba(22, 23, 20, 0.76);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(108, 116, 104, 0.515);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.card-header ion-icon {
+    font-size: 24px;
+    color: #a8ff78;
+    margin-right: 15px;
+}
+
+.card-header h3 {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.settings-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    align-items: baseline;
+    justify-content: space-evenly;
+}
+
+.settings-card {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #b0b0b0;
+}
+
+.settings-form input {
+    width: 100%;
+    background-color: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+}
+
+.settings-form input:focus {
+    border-color: #a8ff78;
+}
+
+.delete-account-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+
+    background-color: transparent;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    color: #ff7878;
+
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.delete-account-btn:hover {
+    background-color: rgba(255, 77, 77, 0.1);
+    border-color: #ff7878;
+    color: #ff4d4d;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+
+    background: transparent;
+    border: 1px solid #a7ff78c6;
+    color: #a8ff78;
+
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.save-btn:hover {
+    background: linear-gradient(to right, #a7ff78e5, #78ffd7e4);
+
+    color: #141514;
+
+    border-color: transparent;
 }

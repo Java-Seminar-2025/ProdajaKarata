@@ -21,9 +21,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+//                .csrf(csrf -> csrf.disable()
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signup/**", "/register/**", "/index", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/signup/**", "/register/**", "/welcome", "/css/**", "/js/**", "/api/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -36,6 +37,9 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/welcome?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID") // ovo spring sam stvara
                         .permitAll()
                 );
 

@@ -4,7 +4,9 @@ import com.football.ticketsale.entity.TicketTierEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface TicketTierRepository extends JpaRepository<TicketTierEntity, String> {
+public interface TicketTierRepository extends JpaRepository<TicketTierEntity, UUID> {
 
 }

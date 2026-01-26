@@ -3,10 +3,11 @@ package com.football.ticketsale.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public class UserDto {
+public class UserRegistrationDto {
     private UUID id;
 
     @NotEmpty(message = "Full name is required")
@@ -20,8 +21,11 @@ public class UserDto {
     private String email;
 
     @NotEmpty(message = "Password is required")
+    @Size(min = 8)
     private String password;
 
+    @NotEmpty(message = "Repeat password")
+    @Size(min = 8)
     private String repeatPassword;
 
     @Pattern(regexp = "\\d{11}", message = "PIN must be exactly 11 digits")
@@ -29,10 +33,10 @@ public class UserDto {
 
     private String countryName;
 
-    public UserDto() {}
+    public UserRegistrationDto() {}
 
-    public UserDto(UUID id, String fullName, String username, String email,
-                   String password, String repeatPassword, String pin, String countryName) {
+    public UserRegistrationDto(UUID id, String fullName, String username, String email,
+                               String password, String repeatPassword, String pin, String countryName) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
@@ -89,7 +93,6 @@ public class UserDto {
     public String getRepeatPassword() {
         return repeatPassword;
     }
-
 
     public String getPin() {
         return pin;

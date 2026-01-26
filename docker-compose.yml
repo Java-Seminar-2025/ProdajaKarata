@@ -1,23 +1,22 @@
 version: '3.8'
 
 services:
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: football-mssql
+  mysql:
+    image: mysql:8.0
+    container_name: football-mysql
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Banic-m3-uB.0"
+      MYSQL_ROOT_PASSWORD: "ironmaiden"
+      MYSQL_DATABASE: "football_ticket_sale_db"
     ports:
-      - "1433:1433"
+      - "3306:3306"
     volumes:
-      - sqlserverdata:/var/opt/mssql
+      - mysqldata:/var/lib/mysql
     networks:
       - football-network
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P "Banic-m3-uB.0" -C -Q "SELECT 1" || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   app:
     build:
@@ -27,17 +26,20 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:sqlserver://mssql:1433;databaseName=TicketSale;encrypt=true;trustServerCertificate=true
-      SPRING_DATASOURCE_USERNAME: SA
-      SPRING_DATASOURCE_PASSWORD: Banic-m3-uB.0
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ticketsale?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "ironmaiden"
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
     depends_on:
-      mssql:
+      mysql:
         condition: service_healthy
     networks:
       - football-network
 
 volumes:
-  sqlserverdata:
+  mysqldata:
 
 networks:
   football-network:

@@ -1,135 +1,107 @@
-USE TicketSale
+CREATE TABLE country (
+    country_uid BINARY(16) NOT NULL,
+    country_name VARCHAR(20) NOT NULL,
+    vat DOUBLE NOT NULL,
+    PRIMARY KEY (country_uid)
+);
 
-IF OBJECT_ID('dbo.Country', 'U') IS NULL
-CREATE TABLE Country (
-	Country_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Country_Name VARCHAR(20) NOT NULL,
-	VAT FLOAT NOT NULL
-)
+CREATE TABLE city (
+    city_uid BINARY(16) NOT NULL,
+    zip_code VARCHAR(20) NOT NULL,
+    city_name VARCHAR(20) NOT NULL,
+    country_uid BINARY(16) NOT NULL,
+    PRIMARY KEY (city_uid),
+    UNIQUE (zip_code),
+    CONSTRAINT fk_city_country FOREIGN KEY (country_uid) REFERENCES country (country_uid) ON DELETE CASCADE
+);
 
-IF OBJECT_ID('dbo.City', 'U') IS NULL
-CREATE TABLE City (
-	Zip_Code VARCHAR(20) PRIMARY KEY,
-	City_Name VARCHAR(20) NOT NULL,
-	Country_UID UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT FK_City_Country FOREIGN KEY (Country_UID)
-	REFERENCES Country(Country_UID)
-	ON DELETE CASCADE
-)
+CREATE TABLE user (
+    user_uid BINARY(16) NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    e_mail VARCHAR(30) NOT NULL,
+    password_hash VARCHAR(60) NOT NULL,
+    full_name VARCHAR(40) NOT NULL,
+    pin CHAR(11),
+    authorization_level VARCHAR(20) DEFAULT 'user',
+    creation_timestamp DATETIME(6),
+    country_uid BINARY(16),
+    PRIMARY KEY (user_uid),
+    UNIQUE (username),
+    UNIQUE (e_mail),
+    CONSTRAINT fk_user_country FOREIGN KEY (country_uid) REFERENCES country (country_uid) ON DELETE SET NULL
+);
 
-IF OBJECT_ID('dbo.User', 'U') IS NULL
-CREATE TABLE [User] (
-	User_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Username VARCHAR(20) NOT NULL UNIQUE,
-	E_Mail VARCHAR(30) NOT NULL UNIQUE,
-	Password_Hash VARCHAR(60) NOT NULL,
-	Full_Name VARCHAR(40) NOT NULL,
-	PIN  CHAR(11) NOT NULL CHECK (PIN LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-	Authorization_Level VARCHAR(10) DEFAULT 'user' CHECK (Authorization_Level IN ('admin','user')),
-	Creation_Timestamp DATETIME DEFAULT GETDATE(),
-	Country_UID UNIQUEIDENTIFIER,
-	CONSTRAINT FK_User_Country FOREIGN KEY (Country_UID)
-	REFERENCES Country(Country_UID)
-	ON DELETE SET NULL
-	ON UPDATE CASCADE
-)
+CREATE TABLE invoice (
+    invoice_uid BINARY(16) NOT NULL,
+    paypal_payment_id VARCHAR(40) NOT NULL,
+    user_uid BINARY(16),
+    payment_status VARCHAR(20) NOT NULL,
+    currency CHAR(3) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    purchase_qty INT NOT NULL,
+    created_at DATETIME(6),
+    PRIMARY KEY (invoice_uid),
+    CONSTRAINT fk_invoice_user FOREIGN KEY (user_uid) REFERENCES user (user_uid) ON DELETE SET NULL
+);
 
-IF OBJECT_ID('dbo.Invoice', 'U') IS NULL
-CREATE TABLE Invoice (
-	Invoice_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Paypal_Payment_ID VARCHAR(40) NOT NULL,
-	User_UID UNIQUEIDENTIFIER,
-	CONSTRAINT FK_Invoice_User FOREIGN KEY (User_UID)
-	REFERENCES [User](User_UID)
-	ON DELETE SET NULL,
-	Payment_Status VARCHAR(20) NOT NULL CHECK (Payment_Status IN ('successful', 'pending', 'cancelled')),
-	Currency CHAR(3) NOT NULL,
-	Amount DECIMAL(10,2) NOT NULL,
-	Purchase_Qty INT NOT NULL,
-	Creation_Timestamp DATETIME DEFAULT GETDATE()
-)
+CREATE TABLE football_club (
+    club_uid BINARY(16) NOT NULL,
+    club_name VARCHAR(20) NOT NULL,
+    total_players INT NOT NULL,
+    PRIMARY KEY (club_uid)
+);
 
-IF OBJECT_ID('dbo.Football_Club', 'U') IS NULL
-CREATE TABLE Football_Club (
-	Club_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Club_Name VARCHAR(20) NOT NULL,
-	Total_Players INT NOT NULL
-)
+CREATE TABLE stadium (
+    stadium_uid BINARY(16) NOT NULL,
+    stadium_name VARCHAR(20) NOT NULL,
+    number_of_seats INT NOT NULL,
+    city_uid BINARY(16),
+    PRIMARY KEY (stadium_uid),
+    CONSTRAINT fk_stadium_city FOREIGN KEY (city_uid) REFERENCES city (city_uid) ON DELETE CASCADE
+);
 
-IF OBJECT_ID('dbo.Stadium', 'U') IS NULL
-CREATE TABLE Stadium (
-	Stadium_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Stadium_Name VARCHAR(20) NOT NULL,
-	Number_Of_Seats INT NOT NULL,
-	City VARCHAR(20)
-	CONSTRAINT FK_Stadium_City FOREIGN KEY (City)
-	REFERENCES City(Zip_Code)
-	ON DELETE CASCADE
-	ON UPDATE CASCADE
-)
+CREATE TABLE `match` (
+    match_uid BINARY(16) NOT NULL,
+    match_datetime DATETIME(6),
+    base_ticket_price_usd DECIMAL(10, 2) NOT NULL,
+    stadium_uid BINARY(16),
+    home_club_uid BINARY(16) NOT NULL,
+    away_club_uid BINARY(16) NOT NULL,
+    PRIMARY KEY (match_uid),
+    CONSTRAINT fk_match_stadium FOREIGN KEY (stadium_uid) REFERENCES stadium (stadium_uid) ON DELETE SET NULL,
+    CONSTRAINT fk_match_home_club FOREIGN KEY (home_club_uid) REFERENCES football_club (club_uid),
+    CONSTRAINT fk_match_away_club FOREIGN KEY (away_club_uid) REFERENCES football_club (club_uid)
+);
 
-IF OBJECT_ID ('dbo.Match', 'U') IS NULL
-CREATE TABLE [Match] (
-	Match_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	Match_Datetime DATETIME,
-	Stadium UNIQUEIDENTIFIER,
-	CONSTRAINT FK_Match_Stadium FOREIGN KEY (Stadium)
-	REFERENCES Stadium(Stadium_UID)
-	ON DELETE SET NULL,
-	Base_Ticket_Price_USD DECIMAL(10,2) NOT NULL
-)
+CREATE TABLE ticket_tier (
+    tier_uid BINARY(16) NOT NULL,
+    tier_name VARCHAR(20),
+    price_modifier DOUBLE NOT NULL,
+    PRIMARY KEY (tier_uid),
+    UNIQUE (tier_name)
+);
 
-IF OBJECT_ID('dbo.Match_Competitors', 'U') IS NULL
-CREATE TABLE Match_Competitors (
-	Match_ID UNIQUEIDENTIFIER NOT NULL,
-	Club_ID UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT FK_MatchCompetitors_Match FOREIGN KEY (Match_ID)
-	REFERENCES [Match](Match_UID)
-	ON DELETE CASCADE,
-	CONSTRAINT FK_MatchCompetitors_FootballClub FOREIGN KEY (Club_ID)
-	REFERENCES Football_Club(Club_UID)
-	ON DELETE CASCADE,
-	CONSTRAINT PK_MatchCompetitors PRIMARY KEY (Match_ID, Club_ID)
-)
+CREATE TABLE ticket (
+    ticket_uid BINARY(16) NOT NULL,
+    user_uid BINARY(16) NOT NULL,
+    owner_name VARCHAR(20) NOT NULL,
+    pin CHAR(11) NOT NULL,
+    tier_uid BINARY(16),
+    status VARCHAR(20),
+    creation_datetime DATETIME(6),
+    invoice_uid BINARY(16),
+    PRIMARY KEY (ticket_uid),
+    CONSTRAINT fk_ticket_user FOREIGN KEY (user_uid) REFERENCES user (user_uid) ON DELETE CASCADE,
+    CONSTRAINT fk_ticket_tier FOREIGN KEY (tier_uid) REFERENCES ticket_tier (tier_uid) ON DELETE SET NULL,
+    CONSTRAINT fk_ticket_invoice FOREIGN KEY (invoice_uid) REFERENCES invoice (invoice_uid) ON DELETE SET NULL
+);
 
-IF OBJECT_ID('Ticker_Tier', 'U') IS NULL
-CREATE TABLE Ticket_Tier (
-	Tier_Name VARCHAR(20) PRIMARY KEY,
-	Price_Modifier FLOAT NOT NULL
-)
-
-IF OBJECT_ID('dbo.Ticket', 'U') IS NULL
-CREATE TABLE Ticket (
-	Ticket_UID UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
-	User_UID UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT FK_Ticket_User FOREIGN KEY (User_UID)
-	REFERENCES [User](User_UID)
-	ON DELETE CASCADE,
-	Owner_Name VARCHAR(20) NOT NULL,
-	PIN  CHAR(11) NOT NULL CHECK (PIN LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-	Tier VARCHAR(20),
-	CONSTRAINT FK_Ticket_TicketTier FOREIGN KEY (Tier)
-	REFERENCES Ticket_Tier(Tier_Name)
-	ON DELETE SET NULL
-	ON UPDATE CASCADE,
-	Status VARCHAR(20) DEFAULT 'pending' CHECK (Status IN ('pending', 'created', 'deleted')),
-	Creation_Datetime DATETIME DEFAULT GETDATE(),
-	Invoice_ID UNIQUEIDENTIFIER,
-	CONSTRAINT FK_Ticket_Invoice FOREIGN KEY (Invoice_ID)
-	REFERENCES Invoice(Invoice_UID)
-	ON DELETE SET NULL
-)
-
-IF OBJECT_ID('dbo.Seat_Reservation', 'U') IS NULL
-CREATE TABLE Seat_Reservation (
-	Match_UID UNIQUEIDENTIFIER NOT NULL,
-	Seat_Number INT NOT NULL,
-	Ticket_UID UNIQUEIDENTIFIER UNIQUE NOT NULL,
-	CONSTRAINT PK_SeatReservation PRIMARY KEY (Match_UID, Seat_Number),
-	CONSTRAINT FK_SeatReservation_Match FOREIGN KEY (Match_UID)
-	REFERENCES Match(Match_UID)
-	ON DELETE CASCADE,
-	CONSTRAINT FK_SeatReservation_Ticket FOREIGN KEY (Ticket_UID)
-	REFERENCES Ticket(Ticket_UID)
-	ON DELETE CASCADE
-)
+CREATE TABLE seat_reservation (
+    match_uid BINARY(16) NOT NULL,
+    seat_number INT NOT NULL,
+    ticket_uid BINARY(16) NOT NULL,
+    PRIMARY KEY (match_uid, seat_number),
+    UNIQUE (ticket_uid),
+    CONSTRAINT fk_seat_reservation_match FOREIGN KEY (match_uid) REFERENCES `match` (match_uid) ON DELETE CASCADE,
+    CONSTRAINT fk_seat_reservation_ticket FOREIGN KEY (ticket_uid) REFERENCES ticket (ticket_uid) ON DELETE CASCADE
+);

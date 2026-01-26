@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style_new.css}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>KupiKartu</h2>
+        </div>
+
+        <ul class="menu-items">
+            <li>
+                <a th:href="@{/home}">
+                    <ion-icon name="compass-outline"></ion-icon>
+                    Otkrij
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                    Moje ulaznice
+                </a>
+            </li>
+
+            <li class="settings-item">
+                <a href="#" class="settings-link active">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    Postavke
+                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
+                </a>
+
+                <div class="dropdown-menu">
+                    <a href="#">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Postavke računa
+                    </a>
+                    <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
+                        Odjavi se
+                    </a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="avatar"></div> <div class="user-info">
+            <span class="username" th:text="${user.username}"></span>
+            <span class="role" th:text="${role}">User</span>
+        </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <h1>Postavke računa</h1>
+        </header>
+
+        <div class="settings-container">
+            <div class="settings-card">
+                <div class="card-header">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    <h3>Uredi profil</h3>
+                </div>
+                <form class="settings-form" th:action="@{/settings/update}" th:object="${userProfileDto}" method="post">
+                    <div class="input-group">
+                        <label>Ime i prezime</label>
+                        <input type="text" th:field="*{fullName}" placeholder="Enter full name">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nova lozinka</label>
+                        <input type="password" th:field="*{newPassword}" placeholder="Unesite novu lozinka">
+                    </div>
+                    <div class="input-group">
+                        <label>Ponovite lozinku</label>
+                        <input type="password" th:field="*{confirmPassword}" placeholder="Ponovite lozinku">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" th:field="*{email}" placeholder="Enter email">
+                    </div>
+
+                    <button type="submit" class="save-btn">Sačuvaj promjene</button>
+
+                    <button type="button" class="delete-account-btn">
+                        <ion-icon name="trash-outline"></ion-icon>
+                        Izbriši profil
+                    </button>
+                </form>
+            </div>
+            </div>
+    </main>
+
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+

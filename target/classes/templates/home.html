@@ -15,33 +15,43 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <h2>TicketSaleApp</h2>
+            <h2>KupiKartu</h2>
         </div>
 
         <ul class="menu-items">
             <li>
                 <a href="#" class="active">
                     <ion-icon name="compass-outline"></ion-icon>
-                    Discover
+                    Otkrij
                 </a>
             </li>
             <li>
                 <a href="#">
                     <ion-icon name="ticket-outline"></ion-icon>
-                    My Tickets
+                    Moje ulaznice
                 </a>
             </li>
-            <li>
-                <a href="#">
+            <li class="settings-item">
+                <a href="#" class="settings-link">
                     <ion-icon name="settings-outline"></ion-icon>
-                    Settings
+                    Postavke
+                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
                 </a>
+                <div class="dropdown-menu">
+                    <a th:href="@{/settings}">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Postavke računa
+                    </a>
+                    <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
+                        Odjavi se
+                    </a>
+                </div>
             </li>
         </ul>
 
         <div class="user-profile">
             <div class="avatar"></div> <div class="user-info">
-            <span class="username" th:text="${username}"></span>
+            <span class="username" th:text="${user.username}"></span>
             <span class="role" th:text="${role}"></span>
         </div>
         </div>
@@ -49,25 +59,28 @@
 
     <main class="main-content">
         <header>
-            <h1>Upcoming games</h1>
-            <input type="text" class="search-bar" placeholder="Search...">
+            <h1>Nadolazeće utakmice</h1>
+            <input type="text" class="search-bar" placeholder="Pretraži...">
+            <div class="basket">
+            <ion-icon name="cart-outline"></ion-icon>
+            </div>
         </header>
 
         <div class="cards-grid">
             <div class="card">
                 <h3>ALDO v DYJ</h3>
                 <p>Datum: 12.05.2024</p>
-                <button>Buy Ticket</button>
+                <button>Kupi kartu</button>
             </div>
             <div class="card">
                 <h3>BAN v HUR</h3>
                 <p>Datum: 15.06.2024</p>
-                <button>Buy Ticket</button>
+                <button>Kupi kartu</button>
             </div>
             <div class="card">
                 <h3>USF v PLA</h3>
                 <p>Datum: 20.07.2024</p>
-                <button>Buy Ticket</button>
+                <button>Kupi kartu</button>
             </div>
         </div>
     </main>

@@ -1,11 +1,12 @@
 package com.football.ticketsale.service;
 
-import com.football.ticketsale.dto.UserDto;
+import com.football.ticketsale.dto.UserProfileDto;
+import com.football.ticketsale.dto.UserRegistrationDto;
 import com.football.ticketsale.entity.UserEntity;
-import com.football.ticketsale.entity.CountryEntity;
 import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.repository.CountryRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -28,16 +29,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(UserDto userDto) {
+    public void saveUser(UserRegistrationDto userRegistrationDto) {
         UserEntity user = new UserEntity();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+        user.setUsername(userRegistrationDto.getUsername());
+        user.setEmail(userRegistrationDto.getEmail());
+        user.setPasswordHash(passwordEncoder.encode(userRegistrationDto.getPassword()));
         user.setAuthorizationLevel("user");
-        user.setFullName(userDto.getFullName());
-        user.setPin(userDto.getPin());
+        user.setFullName(userRegistrationDto.getFullName());
+        user.setPin(userRegistrationDto.getPin());
 
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(String currentUsername, UserProfileDto dto) throws Exception {
+        UserEntity user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new Exception("Korisnik nije pronađen"));
+
+        if (dto.getFullName() != null && !dto.getFullName().trim().isEmpty()) {
+            user.setFullName(dto.getFullName());
+        }
+
+        if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty()) {
+            user.setEmail(dto.getEmail());
+        }
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().trim().isEmpty()) {
+            if (dto.getNewPassword().length() < 8) {
+                throw new Exception("Lozinka mora imati najmanje 8 znakova!");
+            }
+            if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+                throw new Exception("Lozinke se ne podudaraju!");
+            }
+            user.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+        }
+
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String username) {
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            userRepository.delete(user);
+        }
     }
 
     @Override
@@ -51,18 +88,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAllUsers() {
+    public List<UserRegistrationDto> findAllUsers() {
         List<UserEntity> users = userRepository.findAll();
         return users.stream()
                 .map(this::mapToUserDto)
                 .collect(Collectors.toList());
     }
 
-    private UserDto mapToUserDto(UserEntity user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getUserUid());
-        userDto.setUsername(user.getUsername());
-        userDto.setEmail(user.getEmail());
-        return userDto;
+    private UserRegistrationDto mapToUserDto(UserEntity user) {
+        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
+        userRegistrationDto.setId(user.getUserUid());
+        userRegistrationDto.setUsername(user.getUsername());
+        userRegistrationDto.setEmail(user.getEmail());
+        return userRegistrationDto;
     }
 }
