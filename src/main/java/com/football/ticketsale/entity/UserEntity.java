@@ -32,7 +32,7 @@ public class UserEntity {
     private String pin;
 
     @Column(name = "authorization_level", length = 10)
-    private String authorizationLevel = "user";
+    private String authorizationLevel = "USER";
 
     @Column(name = "creation_timestamp", updatable = true)
     private LocalDateTime creationTimestamp;

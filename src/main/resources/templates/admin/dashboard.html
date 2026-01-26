@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+
+<h1>⚙️ Admin Dashboard</h1>
+
+
+<p>Welcome, <span sec:authentication="name"></span></p>
+
+
+<hr>
+
+
+<h2>📊 System Stats</h2>
+<ul>
+    <li>Total users: <b th:text="${userCount}"></b></li>
+    <li>Admins: <b th:text="${adminCount}"></b></li>
+    <li>Matches: <b th:text="${matchCount}"></b></li>
+</ul>
+
+
+<hr>
+
+
+<h2>⚽ Match Management</h2>
+<form th:action="@{/admin/sync-matches}" method="post">
+    <button type="submit">Sync Upcoming Matches</button>
+</form>
+
+
+<p th:if="${param.sync}">
+    ✅ Matches synced successfully
+</p>
+
+
+<hr>
+
+
+<a href="/logout">Logout</a>
+
+
+</body>
+</html>

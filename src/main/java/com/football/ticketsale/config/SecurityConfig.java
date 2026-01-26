@@ -1,5 +1,7 @@
 package com.football.ticketsale.config;
 
+
+import com.football.ticketsale.security.CustomLoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,32 +11,58 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+
         http
-//                .csrf(csrf -> csrf.disable()
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/home", "/signup/**", "/register/**", "/welcome", "/css/**", "/js/**", "/api/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/matches/**").permitAll()
-                        .requestMatchers("/checkout/**", "/my-tickets").permitAll()   //.authenticated()
-                        .requestMatchers("/api/admin/**").permitAll()  //.authenticated()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+
+
+// 🌍 PUBLIC
+                                .requestMatchers(
+                                        "/", "/home", "/welcome",
+                                        "/login", "/signup/**", "/register/**",
+                                        "/css/**", "/js/**"
+                                ).permitAll()
+
+
+                                .requestMatchers(
+                                        org.springframework.http.HttpMethod.GET,
+                                        "/api/matches/**"
+                                ).permitAll()
+
+
+// 👤 USER + ADMIN
+                                .requestMatchers("/checkout/**", "/my-tickets")
+                                .hasAnyRole("USER", "ADMIN")
+
+
+// 🔐 ADMIN ONLY
+                                .requestMatchers("/admin/**", "/api/admin/**")
+                                .hasRole("ADMIN")
+
+
+// 🔒 EVERYTHING ELSE
+                                .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/home", true)
+                        .successHandler(new CustomLoginSuccessHandler())
                         .failureUrl("/login?error")
                         .permitAll()
                 )
@@ -42,9 +70,10 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/welcome?logout")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID") // ovo spring sam stvara
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
+
 
         return http.build();
     }

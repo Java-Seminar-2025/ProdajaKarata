@@ -15,4 +15,5 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     List<UserEntity> findByAuthorizationLevel(String authorizationLevel);
+    long countByAuthorizationLevel(String authorizationLevel);
 }
