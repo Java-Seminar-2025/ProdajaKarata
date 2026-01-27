@@ -1,91 +1,321 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Checkout</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - KupiKartu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style_new.css}">
+
+    <style>
+        .radio-card input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+    </style>
 </head>
 <body>
+<div class="dashboard-container">
 
-<h1>Checkout</h1>
-
-<div>
-    <h2 th:text="${match.homeTeam.clubName} + ' vs ' + ${match.awayTeam.clubName}"></h2>
-    <p th:text="'Date: ' + ${#temporals.format(match.matchDatetime, 'dd.MM.yyyy HH:mm')}"></p>
-    <p th:text="'Base price: $' + ${match.baseTicketPriceUsd}"></p>
-</div>
-
-<hr/>
-
-<h3>Select section + quantity</h3>
-
-<form th:action="@{/checkout/reserve}" method="post">
-
-    <input type="hidden" name="matchId" th:value="${match.matchUid}" />
-
-    <label>Owner name:</label>
-    <input type="text" name="ownerName" required/>
-    <br/>
-
-    <label>PIN (11 digits):</label>
-    <input type="text" name="pin" required/>
-    <br/>
-
-    <label>Quantity (1-6):</label>
-    <input type="number" name="quantity" min="1" max="6" required/>
-    <br/><br/>
-
-    <div th:each="entry : ${sectionsByStand}">
-        <h4 th:text="${entry.key}"></h4>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <label th:each="sec : ${entry.value}" style="border:1px solid #ccc; padding:6px 10px; border-radius:6px;">
-                <input type="radio" name="sectionCode" th:value="${sec.sectionCode}" required/>
-                <span th:text="${sec.sectionCode}"></span>
-                <span th:text="' (' + ${availability[sec.sectionUid]} + ' avail)'"></span>
-            </label>
-        </div>
-    </div>
-
-    <br/>
-    <button type="submit">Reserve</button>
-</form>
-
-
-<hr/>
-
-<div th:if="${reserved != null}">
-    <h3>Reserved</h3>
-    <p th:text="'Section: ' + ${reserved.sectionCode} + ', qty: ' + ${reserved.quantity} + ', total: $' + ${reserved.totalPrice}"></p>
-
-    <ul>
-        <li th:each="t : ${reserved.tickets}"
-            th:text="'Seat ' + ${t.seatNumber} + ' (ticketId ' + ${t.ticketId} + ')'"></li>
-    </ul>
-
-    <h3>Mock payment</h3>
-    <form th:action="@{/checkout/pay}" method="post" th:object="${payRequest}">
-        <!-- send ticket ids -->
-        <div th:each="t : ${reserved.tickets}">
-            <input type="hidden" name="ticketIds" th:value="${t.ticketId}"/>
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>KupiKartu</h2>
         </div>
 
-        <label>Payment method:</label>
-        <select th:field="*{paymentMethod}">
-            <option value="MOCK_CARD">Mock Card</option>
-            <option value="PAYPAL">PayPal (mock)</option>
-        </select>
-        <br/>
+        <ul class="menu-items">
+            <li>
+                <a th:href="@{/home}">
+                    <ion-icon name="compass-outline"></ion-icon>
+                    Otkrij
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/my-tickets}">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                    Moje ulaznice
+                </a>
+            </li>
+            <li class="settings-item">
+                <a href="#" class="settings-link">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    Postavke
+                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
+                </a>
+                <div class="dropdown-menu">
+                    <a th:href="@{/settings}">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Postavke računa
+                    </a>
+                    <a th:href="@{/logout}" class="sign-out">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        Odjavi se
+                    </a>
+                </div>
+            </li>
+        </ul>
 
-        <label>Cardholder name:</label>
-        <input type="text" th:field="*{cardholderName}"/>
-        <br/>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
+                <span class="role">Korisnik</span>
+            </div>
+        </div>
+    </nav>
 
-        <label>Last4:</label>
-        <input type="text" th:field="*{last4}" maxlength="4"/>
-        <br/><br/>
+    <main class="main-content">
+        <div class="checkout-wrapper">
 
-        <button type="submit">Pay</button>
-    </form>
+            <div class="checkout-header">
+                <h1>Checkout</h1>
+                <h2 th:text="${match.homeTeam.clubName} + ' vs ' + ${match.awayTeam.clubName}"></h2>
+                <div class="match-details">
+                    <span th:text="${#temporals.format(match.matchDatetime, 'dd.MM.yyyy HH:mm')}"></span>
+                    <span class="price-tag" th:text="'Base price: $' + ${match.baseTicketPriceUsd}"></span>
+                </div>
+            </div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div class="separator"></div>
+
+
+            <div th:if="${reserved == null}">
+                <h3 style="text-align:center; margin-bottom:30px;">Select section + quantity</h3>
+
+                <form th:action="@{/checkout/reserve}" method="post" th:object="${reserveRequest}" class="checkout-form">
+                    <input type="hidden" name="matchId" th:value="${match.matchUid}" />
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Owner name</label>
+                            <input type="text" th:field="*{ownerName}" required placeholder="Enter full name"/>
+                        </div>
+                        <div class="input-group">
+                            <label>PIN (11 digits)</label>
+                            <input type="text" th:field="*{pin}" required placeholder="Personal ID number"/>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Quantity (1-6)</label>
+                        <input type="number" name="quantity" min="1" max="6" value="1" required/>
+                    </div>
+
+                    <div class="stadium-selection-area">
+                        <label style="display:block; margin-bottom:15px; color:#888; text-align:center;">
+                            Tap a section on the stadium
+                        </label>
+
+                        <div class="stadium-wrapper">
+                            <div class="stadium-base">
+                                <div class="stands-ring"></div>
+                                <div class="track-oval"></div>
+
+                                <div class="pitch">
+                                    <div class="mid-line"></div>
+                                    <div class="center-circle"></div>
+                                    <div class="penalty-area left"></div>
+                                    <div class="penalty-area right"></div>
+                                </div>
+
+                                <div class="interactive-overlay">
+                                    <th:block th:each="entry : ${sectionsByStand}">
+                                        <th:block th:each="sec : ${entry.value}">
+                                            <div class="section-marker"
+                                                 th:classappend="${'pos-' + sec.sectionCode}"
+                                                 th:attr="data-code=${sec.sectionCode}, onclick='selectSection(\'' + ${sec.sectionCode} + '\')'"
+                                                 th:text="${sec.sectionCode}">
+                                            </div>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="selected-info-box">
+                            <span class="info-label">Selected:</span>
+                            <span id="displaySelectedCode" class="info-value">-</span>
+                            <span id="displaySelectedAvail" class="info-sub"></span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden radios that actually submit sectionCode -->
+                    <div class="sections-list-hidden">
+                        <div th:each="entry : ${sectionsByStand}">
+                            <div th:each="sec : ${entry.value}">
+                                <input type="radio"
+                                       th:field="*{sectionCode}"
+                                       th:value="${sec.sectionCode}"
+                                       th:id="'radio-' + ${sec.sectionCode}"
+                                       th:data-avail="${availability[sec.sectionUid]}"
+                                       required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="save-btn" style="margin-top:30px;">Reserve Tickets</button>
+                </form>
+            </div>
+
+
+            <div th:if="${reserved != null}" class="payment-section">
+
+
+                <div class="reserve-timer">
+                    <div class="timer-row">
+                        <span class="timer-label">Reservation expires in</span>
+                        <span id="countdown" class="timer-value">--:--</span>
+                    </div>
+
+                    <div class="timer-bar">
+                        <div id="timerBarFill" class="timer-bar-fill"></div>
+                    </div>
+
+                    <input type="hidden" id="reservedUntil"
+                           th:value="${#temporals.format(reserved.reservedUntil, 'yyyy-MM-dd''T''HH:mm:ss')}" />
+                </div>
+
+                <div class="success-box">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    <div>
+                        <h3>Reserved Successfully!</h3>
+                        <p th:text="'Section: ' + ${reserved.sectionCode} + ' | Qty: ' + ${reserved.quantity}"></p>
+                        <p class="total-price" th:text="'Total to pay: $' + ${reserved.totalPrice}"></p>
+                    </div>
+                </div>
+
+                <div class="ticket-list">
+                    <h4>Seats reserved:</h4>
+                    <ul>
+                        <li th:each="t : ${reserved.tickets}"
+                            th:text="'Seat ' + ${t.seatNumber} + ' (ID: ' + ${t.ticketId} + ')'"></li>
+                    </ul>
+                </div>
+
+                <h3>Complete Payment</h3>
+
+                <form id="payForm" th:action="@{/checkout/pay}" method="post" th:object="${payRequest}" class="checkout-form">
+                    <div th:each="t : ${reserved.tickets}">
+                        <input type="hidden" name="ticketIds" th:value="${t.ticketId}"/>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Payment method</label>
+                        <select th:field="*{paymentMethod}" class="styled-select">
+                            <option value="MOCK_CARD">Credit Card (Mock)</option>
+                            <option value="PAYPAL">PayPal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" th:field="*{cardholderName}" placeholder="Name on card"/>
+                        </div>
+                        <div class="input-group">
+                            <label>Last 4 digits</label>
+                            <input type="text" th:field="*{last4}" maxlength="4" placeholder="1234"/>
+                        </div>
+                    </div>
+
+                    <button id="payBtn" type="submit" class="save-btn">Pay Now</button>
+                </form>
+
+                <form id="cancelForm" th:action="@{/checkout/cancel}" method="post" style="margin-top:12px;">
+                    <input type="hidden" name="matchId" th:value="${match.matchUid}">
+                    <button type="submit" class="btn-cancel-reservation">Cancel reservation</button>
+                </form>
+
+            </div>
+
+        </div>
+    </main>
 </div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    (function () {
+      const untilEl = document.getElementById("reservedUntil");
+      const countdownEl = document.getElementById("countdown");
+      const fillEl = document.getElementById("timerBarFill");
+      const payBtn = document.getElementById("payBtn");
+
+
+
+      if (!untilEl || !countdownEl || !fillEl) return;
+
+      const s = untilEl.value; // "yyyy-MM-ddTHH:mm:ss"
+      const [datePart, timePart] = s.split("T");
+      const [y, mo, d] = datePart.split("-").map(Number);
+      const [hh, mm, ss] = timePart.split(":").map(Number);
+      const reservedUntil = new Date(y, mo - 1, d, hh, mm, ss || 0);
+
+      const DURATION_MS = 10 * 60 * 1000;
+      const startMs = reservedUntil.getTime() - DURATION_MS;
+
+      function fmt(m, s) {
+        return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      }
+
+      function tick() {
+        const now = Date.now();
+        const msLeft = reservedUntil.getTime() - now;
+
+        if (msLeft <= 0) {
+          countdownEl.textContent = "00:00";
+          fillEl.style.width = "0%";
+          if (payBtn) {
+            payBtn.disabled = true;
+            payBtn.textContent = "Reservation expired";
+          }
+          return;
+        }
+
+        const totalSeconds = Math.floor(msLeft / 1000);
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        countdownEl.textContent = fmt(m, s);
+
+        const progress = Math.max(0, Math.min(1, (now - startMs) / DURATION_MS));
+        const remainingPct = Math.round((1 - progress) * 100);
+        fillEl.style.width = remainingPct + "%";
+      }
+
+      tick();
+      setInterval(tick, 250);
+    })();
+</script>
+
+<script>
+    function selectSection(code) {
+        const radio = document.getElementById('radio-' + code);
+        if (!radio) return;
+
+        radio.click();
+
+        document.querySelectorAll('.section-marker').forEach(el => {
+            el.classList.remove('selected');
+            if (el.getAttribute('data-code') === code) {
+                el.classList.add('selected');
+            }
+        });
+
+        const avail = radio.getAttribute('data-avail');
+        const codeDisplay = document.getElementById('displaySelectedCode');
+        const availDisplay = document.getElementById('displaySelectedAvail');
+
+        if (codeDisplay) {
+            codeDisplay.innerText = "Section " + code;
+            codeDisplay.style.color = "#a8ff78";
+        }
+        if (availDisplay) {
+            availDisplay.innerText = "(" + avail + " seats left)";
+        }
+    }
+</script>
 
 </body>
 </html>

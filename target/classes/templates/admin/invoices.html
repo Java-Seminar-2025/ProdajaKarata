@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svi Računi | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<div class="ticket-view-container">
+
+    <div class="header-row">
+        <a th:href="@{/admin/dashboard}" class="back-link">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+            Povratak
+        </a>
+    </div>
+
+    <div class="title-section">
+        <h2>Pregled svih <span>računa</span></h2>
+    </div>
+    <div class="stat-info" style="display: flex; align-items: center; gap: 10px;">
+        <h3 style="color: white; margin: 0; font-size: 1.2rem; font-weight: 500;">Ukupna zarada:</h3>
+        <b style="color: #4CAF50; font-size: 1.2rem; font-weight: 600;"
+           th:text="${totalRevenue != null ? totalRevenue : '0.00'}">
+        </b>
+    </div>
+
+    <div class="user-table-container">
+        <table class="user-table">
+            <thead>
+            <tr>
+                <th>ID Računa</th>
+                <th>Korisnik</th>
+                <th>Iznos</th>
+                <th>Status</th>
+                <th>PayPal ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="inv : ${invoices}">
+                <td>
+                    <span class="user-uid-text" th:text="${inv.invoiceUid}">ID</span>
+                </td>
+                <td>
+                    <span class="user-name-text" th:text="${inv.user.username}">Username</span>
+                </td>
+                <td>
+                    <b style="color: #4CAF50;" th:text="${inv.amount + ' ' + inv.currency}">0.00 EUR</b>
+                </td>
+                <td>
+                    <span th:class="'badge ' + (${inv.paymentStatus == 'COMPLETED' ? 'status-paid' : 'status-reserved'})"
+                          th:text="${inv.paymentStatus}">Status</span>
+                </td>
+                <td style="font-size: 0.8rem; color: #888;"
+                    th:text="${inv.paypalPaymentId != null ? inv.paypalPaymentId : 'N/A'}">
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(invoices)}">
+                <td colspan="5" class="empty-state">Trenutno nema izdanih računa u sustavu.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

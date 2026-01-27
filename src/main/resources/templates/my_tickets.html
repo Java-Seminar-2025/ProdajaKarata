@@ -1,25 +1,196 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Tickets</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - KupiKartu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style_new.css}">
+    <link rel="stylesheet" th:href="@{/css/my-tickets.css}">
 </head>
 <body>
 
-<h1>My Tickets</h1>
+<div class="dashboard-container">
 
-<div th:if="${#lists.isEmpty(tickets)}">
-    <p>No purchased tickets yet.</p>
+    <nav class="sidebar">
+        <div class="logo">
+            <h2>KupiKartu</h2>
+        </div>
+
+        <ul class="menu-items">
+            <li>
+                <a th:href="@{/home}">
+                    <ion-icon name="compass-outline"></ion-icon>
+                    Otkrij
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                    Moje ulaznice
+                </a>
+            </li>
+            <li class="settings-item">
+                <a href="#" class="settings-link">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    Postavke
+                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
+                </a>
+                <div class="dropdown-menu">
+                    <a th:href="@{/settings}">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Postavke računa
+                    </a>
+                    <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
+                        Odjavi se
+                    </a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <span class="username" th:text="${user.username}"></span>
+                <span class="role" th:text="${user != null ? user.authorizationLevel : ''}"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <div class="tickets-wrapper">
+            <div class="page-header">
+                <h1>My Tickets</h1>
+                <p class="subtitle">Pregled tvojih kupljenih ulaznica</p>
+            </div>
+
+            <div class="reservations-block" th:if="${activeReservations != null and !#lists.isEmpty(activeReservations)}">
+                <h2 class="section-title">Active reservations</h2>
+
+                <div class="tickets-grid">
+                    <div class="ticket-card" th:each="r : ${activeReservations}">
+
+                        <div class="ticket-top">
+                            <div class="icon-box">
+                                <ion-icon name="time-outline"></ion-icon>
+                            </div>
+                            <span class="status-badge status-pending">RESERVED</span>
+                        </div>
+
+                        <div class="ticket-details">
+                            <div class="detail-row">
+                                <span class="label">Section</span>
+                                <span class="value highlight" th:text="${r.sectionCode}"></span>
+                            </div>
+
+
+                            <div class="detail-row">
+                                <span class="label">Qty</span>
+                                <span class="value" th:text="${r.quantity}"></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="label">Owner</span>
+                                <span class="value" th:text="${r.ownerName}"></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="label">Expires</span>
+                                <span class="value small-text" th:text="${#temporals.format(r.reservedUntil, 'dd.MM.yyyy HH:mm:ss')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="ticket-actions">
+                            <form th:action="@{/checkout/resume}" method="post">
+                                <input type="hidden" name="matchId" th:value="${r.matchId}">
+                                <input type="hidden" name="sectionCode" th:value="${r.sectionCode}">
+                                <input type="hidden" name="reservedUntil" th:value="${#temporals.format(r.reservedUntil, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                                <button type="submit" class="btn-resume">Resume</button>
+                            </form>
+                        </div>
+
+                        <div class="ticket-rip"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div th:if="${#lists.isEmpty(tickets)}" class="empty-state">
+                <div class="empty-icon">
+                    <ion-icon name="ticket-outline"></ion-icon>
+                </div>
+                <h3>No tickets yet</h3>
+                <p>Kupite ulaznice za nadolazeće utakmice.</p>
+                <a href="/home" class="btn-checkout" style="display:inline-block; width:auto; padding: 10px 30px; text-align:center; margin-top:15px;">
+                    Browse Games
+                </a>
+            </div>
+
+            <div class="tickets-grid" th:unless="${#lists.isEmpty(tickets)}">
+
+                <div th:each="t : ${tickets}" class="ticket-card">
+
+                    <div class="ticket-top">
+                        <div class="icon-box">
+                            <ion-icon name="qr-code-outline"></ion-icon>
+                        </div>
+                        <span class="status-badge" th:text="${t.status}"
+                              th:classappend="${t.status == 'PAID' ? 'status-paid' : 'status-pending'}">
+                        </span>
+                    </div>
+
+                    <div class="ticket-details">
+                        <div class="detail-row">
+                            <span class="label">Seat Info</span>
+                            <span class="value highlight" th:text="${seatByTicket[t.ticketUid] ?: 'N/A'}"></span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="label">Section</span>
+                            <span class="value highlight" th:text="${sectionByTicket[t.ticketUid] ?: 'N/A'}"></span>
+                        </div>
+
+
+                        <div class="detail-row">
+                            <span class="label">Owner</span>
+                            <span class="value" th:text="${t.ownerName}"></span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="label">Invoice ID</span>
+                            <span class="value small-text"
+                                  th:text="${t.invoiceEntity != null ? t.invoiceEntity.invoiceUid : 'N/A'}"
+                                  th:title="${t.invoiceEntity != null ? t.invoiceEntity.invoiceUid : ''}">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-actions"
+                         th:if="${t.status == 'PAID' and T(java.lang.Boolean).TRUE.equals(refundable[t.ticketUid])}"
+>
+
+                    <form th:action="@{/refund}" method="post">
+                            <input type="hidden" name="ticketId" th:value="${t.ticketUid}">
+                            <button type="submit" class="btn-refund">
+                                Refund
+                            </button>
+                        </form>
+
+                    </div>
+
+                    <div class="ticket-rip"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
 </div>
 
-<div th:each="t : ${tickets}" style="border:1px solid #ccc; padding:12px; border-radius:8px; margin-bottom:10px;">
-    <p><b>Status:</b> <span th:text="${t.status}"></span></p>
-    <p><b>Owner:</b> <span th:text="${t.ownerName}"></span></p>
-    <p><b>Seat:</b> <span th:text="${seatByTicket[t.ticketUid]}"></span></p>
-    <p><b>Invoice:</b> <span th:text="${t.invoiceEntity != null ? t.invoiceEntity.invoiceUid : 'N/A'}"></span></p>
-</div>
-
-<a href="/home">Back to Home</a>
-
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

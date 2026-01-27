@@ -8,9 +8,12 @@ import java.util.UUID;
 
 @Data
 public class MatchDto {
+    private String Status;
+    private String competitionCode;
     private UUID homeClubId;
     private UUID awayClubId;
     private UUID stadiumId;
     private LocalDateTime matchDateTime;
     private BigDecimal price;
+
 }

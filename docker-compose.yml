@@ -16,9 +16,11 @@ services:
     networks:
       - football-network
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-u", "root", "-pironmaiden"]
+      interval: 5s
       timeout: 20s
       retries: 10
+      start_period: 10s
 
   app:
     build:

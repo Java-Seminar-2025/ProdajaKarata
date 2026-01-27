@@ -1,0 +1,212 @@
+.tickets-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #a8a8a8;
+    font-size: 14px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.empty-icon ion-icon {
+    font-size: 60px;
+    color: #a8ff78;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #b0b0b0;
+}
+
+.tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.ticket-card {
+    background-color: rgba(22, 23, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    transition: transform 0.3s;
+    overflow: hidden;
+}
+
+.ticket-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(168, 255, 120, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ticket-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-box ion-icon {
+    font-size: 22px;
+    color: #fff;
+}
+
+.status-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-paid {
+    background-color: rgba(168, 255, 120, 0.15);
+    color: #a8ff78;
+    border: 1px solid rgba(168, 255, 120, 0.3);
+}
+
+.status-pending {
+    background-color: rgba(255, 200, 100, 0.15);
+    color: #ffc864;
+    border: 1px solid rgba(255, 200, 100, 0.3);
+}
+
+.ticket-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+.detail-row .label {
+    color: #888;
+}
+
+.detail-row .value {
+    color: #e5e5e5;
+    font-weight: 500;
+    text-align: right;
+}
+
+.detail-row .value.highlight {
+    color: #a8ff78;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.detail-row .value.small-text {
+    font-size: 11px;
+    color: #666;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ticket-rip {
+    position: absolute;
+    top: 70px;
+    left: -10px;
+    right: -10px;
+    height: 1px;
+    border-top: 2px dashed rgba(255, 255, 255, 0.1);
+    display: none;
+}
+
+.ticket-actions {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.btn-refund {
+    background: transparent;
+    border: 1px solid #ff5c5c;
+    color: #ff5c5c;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-refund:hover {
+    background: rgba(255, 92, 92, 0.15);
+}
+
+.btn-refund:active {
+    transform: scale(0.97);
+}
+
+.section-title {
+  margin: 10px 0 18px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.ticket-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-resume {
+  border: 1px solid rgba(168, 255, 120, 0.35);
+  background: rgba(168, 255, 120, 0.12);
+  color: #a8ff78;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-resume:hover {
+  background: rgba(168, 255, 120, 0.18);
+  border-color: rgba(168, 255, 120, 0.6);
+}
+

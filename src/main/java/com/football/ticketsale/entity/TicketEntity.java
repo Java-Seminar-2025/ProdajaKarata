@@ -15,6 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketEntity {
+    public static final String STATUS_RESERVED = "RESERVED";
+    public static final String STATUS_PAID = "PAID";
+    public static final String STATUS_CANCELLED = "CANCELLED";
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "ticket_uid", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
@@ -36,11 +40,23 @@ public class TicketEntity {
     @JoinColumn(name = "tier_uid", referencedColumnName = "tier_uid")
     private TicketTierEntity tierEntity;
 
-    @Column(name = "status", length = 20)
-    private String status = "pending";
+    @Column(name = "status", length = 20, nullable = false)
+    private String status = "PENDING";
 
     @Column(name = "creation_datetime", updatable = false)
     private LocalDateTime creationDatetime;
+
+    @Column(name = "reserved_until")
+    private LocalDateTime reservedUntil;
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt;
+
+    @Column(name = "refunded_at")
+    private LocalDateTime refundedAt;
+
+    @Column(name = "section_code", length = 10)
+    private String sectionCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_uid", columnDefinition = "BINARY(16)",
@@ -53,7 +69,10 @@ public class TicketEntity {
             creationDatetime = LocalDateTime.now();
         }
         if (status == null) {
-            status = "pending";
+            status = "PENDING";
         }
     }
+
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private SeatReservationEntity seatReservation;
 }
