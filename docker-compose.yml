@@ -5,6 +5,8 @@ services:
     image: mysql:8.0
     container_name: football-mysql
     environment:
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
       MYSQL_ROOT_PASSWORD: "ironmaiden"
       MYSQL_DATABASE: "football_ticket_sale_db"
     ports:
@@ -14,9 +16,11 @@ services:
     networks:
       - football-network
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-u", "root", "-pironmaiden"]
+      interval: 5s
       timeout: 20s
       retries: 10
+      start_period: 10s
 
   app:
     build:
@@ -26,12 +30,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ticketsale?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/football_ticket_sale_db?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "ironmaiden"
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
       SPRING_FLYWAY_ENABLED: "true"
       SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+      SPRING_PROFILES_ACTIVE: dev
     depends_on:
       mysql:
         condition: service_healthy

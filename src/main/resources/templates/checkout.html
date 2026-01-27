@@ -26,13 +26,13 @@
 
         <ul class="menu-items">
             <li>
-                <a href="#" class="active">
+                <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
                     Otkrij
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a th:href="@{/my-tickets}">
                     <ion-icon name="ticket-outline"></ion-icon>
                     Moje ulaznice
                 </a>
@@ -48,7 +48,8 @@
                         <ion-icon name="person-circle-outline"></ion-icon>
                         Postavke računa
                     </a>
-                    <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
+                    <a th:href="@{/logout}" class="sign-out">
+                        <ion-icon name="log-out-outline"></ion-icon>
                         Odjavi se
                     </a>
                 </div>
@@ -65,7 +66,6 @@
     </nav>
 
     <main class="main-content">
-
         <div class="checkout-wrapper">
 
             <div class="checkout-header">
@@ -76,14 +76,14 @@
                     <span class="price-tag" th:text="'Base price: $' + ${match.baseTicketPriceUsd}"></span>
                 </div>
             </div>
-
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
             <div class="separator"></div>
 
+
             <div th:if="${reserved == null}">
-                <h3>Select section + quantity</h3>
+                <h3 style="text-align:center; margin-bottom:30px;">Select section + quantity</h3>
 
                 <form th:action="@{/checkout/reserve}" method="post" th:object="${reserveRequest}" class="checkout-form">
-
                     <input type="hidden" name="matchId" th:value="${match.matchUid}" />
 
                     <div class="form-row">
@@ -102,24 +102,79 @@
                         <input type="number" name="quantity" min="1" max="6" value="1" required/>
                     </div>
 
-                    <div class="sections-container">
-                        <div th:each="entry : ${sectionsByStand}" class="stand-group">
-                            <h4 th:text="${entry.key}"></h4>
-                            <div class="radio-grid">
-                                <label th:each="sec : ${entry.value}" class="radio-card">
-                                    <input type="radio" th:field="*{sectionCode}" th:value="${sec.sectionCode}" required/>
-                                    <span class="code" th:text="${sec.sectionCode}"></span>
-                                    <span class="avail" th:text="${availability[sec.sectionUid]} + ' seats left'"></span>
-                                </label>
+                    <div class="stadium-selection-area">
+                        <label style="display:block; margin-bottom:15px; color:#888; text-align:center;">
+                            Tap a section on the stadium
+                        </label>
+
+                        <div class="stadium-wrapper">
+                            <div class="stadium-base">
+                                <div class="stands-ring"></div>
+                                <div class="track-oval"></div>
+
+                                <div class="pitch">
+                                    <div class="mid-line"></div>
+                                    <div class="center-circle"></div>
+                                    <div class="penalty-area left"></div>
+                                    <div class="penalty-area right"></div>
+                                </div>
+
+                                <div class="interactive-overlay">
+                                    <th:block th:each="entry : ${sectionsByStand}">
+                                        <th:block th:each="sec : ${entry.value}">
+                                            <div class="section-marker"
+                                                 th:classappend="${'pos-' + sec.sectionCode}"
+                                                 th:attr="data-code=${sec.sectionCode}, onclick='selectSection(\'' + ${sec.sectionCode} + '\')'"
+                                                 th:text="${sec.sectionCode}">
+                                            </div>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="selected-info-box">
+                            <span class="info-label">Selected:</span>
+                            <span id="displaySelectedCode" class="info-value">-</span>
+                            <span id="displaySelectedAvail" class="info-sub"></span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden radios that actually submit sectionCode -->
+                    <div class="sections-list-hidden">
+                        <div th:each="entry : ${sectionsByStand}">
+                            <div th:each="sec : ${entry.value}">
+                                <input type="radio"
+                                       th:field="*{sectionCode}"
+                                       th:value="${sec.sectionCode}"
+                                       th:id="'radio-' + ${sec.sectionCode}"
+                                       th:data-avail="${availability[sec.sectionUid]}"
+                                       required/>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="save-btn">Reserve Tickets</button>
+                    <button type="submit" class="save-btn" style="margin-top:30px;">Reserve Tickets</button>
                 </form>
             </div>
 
+
             <div th:if="${reserved != null}" class="payment-section">
+
+
+                <div class="reserve-timer">
+                    <div class="timer-row">
+                        <span class="timer-label">Reservation expires in</span>
+                        <span id="countdown" class="timer-value">--:--</span>
+                    </div>
+
+                    <div class="timer-bar">
+                        <div id="timerBarFill" class="timer-bar-fill"></div>
+                    </div>
+
+                    <input type="hidden" id="reservedUntil"
+                           th:value="${#temporals.format(reserved.reservedUntil, 'yyyy-MM-dd''T''HH:mm:ss')}" />
+                </div>
 
                 <div class="success-box">
                     <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -139,7 +194,8 @@
                 </div>
 
                 <h3>Complete Payment</h3>
-                <form th:action="@{/checkout/pay}" method="post" th:object="${payRequest}" class="checkout-form">
+
+                <form id="payForm" th:action="@{/checkout/pay}" method="post" th:object="${payRequest}" class="checkout-form">
                     <div th:each="t : ${reserved.tickets}">
                         <input type="hidden" name="ticketIds" th:value="${t.ticketId}"/>
                     </div>
@@ -159,12 +215,18 @@
                         </div>
                         <div class="input-group">
                             <label>Last 4 digits</label>
-                            <input type="text" th:field="*{last4}" maxlength="4" placeholder="****"/>
+                            <input type="text" th:field="*{last4}" maxlength="4" placeholder="1234"/>
                         </div>
                     </div>
 
-                    <button type="submit" class="save-btn">Pay Now</button>
+                    <button id="payBtn" type="submit" class="save-btn">Pay Now</button>
                 </form>
+
+                <form id="cancelForm" th:action="@{/checkout/cancel}" method="post" style="margin-top:12px;">
+                    <input type="hidden" name="matchId" th:value="${match.matchUid}">
+                    <button type="submit" class="btn-cancel-reservation">Cancel reservation</button>
+                </form>
+
             </div>
 
         </div>
@@ -173,5 +235,87 @@
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    (function () {
+      const untilEl = document.getElementById("reservedUntil");
+      const countdownEl = document.getElementById("countdown");
+      const fillEl = document.getElementById("timerBarFill");
+      const payBtn = document.getElementById("payBtn");
+
+
+
+      if (!untilEl || !countdownEl || !fillEl) return;
+
+      const s = untilEl.value; // "yyyy-MM-ddTHH:mm:ss"
+      const [datePart, timePart] = s.split("T");
+      const [y, mo, d] = datePart.split("-").map(Number);
+      const [hh, mm, ss] = timePart.split(":").map(Number);
+      const reservedUntil = new Date(y, mo - 1, d, hh, mm, ss || 0);
+
+      const DURATION_MS = 10 * 60 * 1000;
+      const startMs = reservedUntil.getTime() - DURATION_MS;
+
+      function fmt(m, s) {
+        return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      }
+
+      function tick() {
+        const now = Date.now();
+        const msLeft = reservedUntil.getTime() - now;
+
+        if (msLeft <= 0) {
+          countdownEl.textContent = "00:00";
+          fillEl.style.width = "0%";
+          if (payBtn) {
+            payBtn.disabled = true;
+            payBtn.textContent = "Reservation expired";
+          }
+          return;
+        }
+
+        const totalSeconds = Math.floor(msLeft / 1000);
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        countdownEl.textContent = fmt(m, s);
+
+        const progress = Math.max(0, Math.min(1, (now - startMs) / DURATION_MS));
+        const remainingPct = Math.round((1 - progress) * 100);
+        fillEl.style.width = remainingPct + "%";
+      }
+
+      tick();
+      setInterval(tick, 250);
+    })();
+</script>
+
+<script>
+    function selectSection(code) {
+        const radio = document.getElementById('radio-' + code);
+        if (!radio) return;
+
+        radio.click();
+
+        document.querySelectorAll('.section-marker').forEach(el => {
+            el.classList.remove('selected');
+            if (el.getAttribute('data-code') === code) {
+                el.classList.add('selected');
+            }
+        });
+
+        const avail = radio.getAttribute('data-avail');
+        const codeDisplay = document.getElementById('displaySelectedCode');
+        const availDisplay = document.getElementById('displaySelectedAvail');
+
+        if (codeDisplay) {
+            codeDisplay.innerText = "Section " + code;
+            codeDisplay.style.color = "#a8ff78";
+        }
+        if (availDisplay) {
+            availDisplay.innerText = "(" + avail + " seats left)";
+        }
+    }
+</script>
+
 </body>
 </html>

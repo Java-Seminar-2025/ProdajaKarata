@@ -18,7 +18,7 @@ public class RegistrationValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
         return UserRegistrationDto.class.isAssignableFrom(clazz);
-    } // spring validator interface
+    }
 
     @Override
     public void validate(Object target, Errors errors) {

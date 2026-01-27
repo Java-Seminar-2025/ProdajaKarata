@@ -5,7 +5,9 @@ import com.football.ticketsale.dto.checkout.ReserveSectionRequestDto;
 import com.football.ticketsale.dto.checkout.ReserveSectionResponseDto;
 import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumSectionEntity;
+import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.repository.MatchRepository;
+import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.service.CheckoutService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,16 +25,37 @@ public class CheckoutController {
 
     private final CheckoutService checkoutService;
     private final MatchRepository matchRepository;
+    private final UserRepository userRepository;
 
-    public CheckoutController(CheckoutService checkoutService, MatchRepository matchRepository) {
+    public CheckoutController(CheckoutService checkoutService, MatchRepository matchRepository, UserRepository userRepository) {
         this.checkoutService = checkoutService;
         this.matchRepository = matchRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/checkout/{matchId}")
-    public String checkoutPage(@PathVariable UUID matchId, Model model) {
+    public String checkoutPage(@PathVariable UUID matchId,
+                               @AuthenticationPrincipal UserDetails userDetails,
+                               Model model) {
+
+        UserEntity user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
         MatchEntity match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
+
+        model.addAttribute("user", user);
+        model.addAttribute("match", match);
+
+
+        ReserveSectionResponseDto resumed = checkoutService.buildResumeModel(user.getUsername(), matchId);
+        if (resumed != null) {
+            model.addAttribute("reserved", resumed);
+            model.addAttribute("payRequest", new PayRequestDto());
+            // You can skip sections/availability because payment page doesn't need them
+            return "checkout";
+        }
+
 
         List<StadiumSectionEntity> sections = checkoutService.getSectionsForMatch(matchId);
         Map<UUID, Long> availability = checkoutService.getAvailabilityBySection(matchId);
@@ -48,11 +71,15 @@ public class CheckoutController {
         model.addAttribute("sectionsByStand", sectionsByStand);
         model.addAttribute("availability", availability);
 
-        model.addAttribute("reserveRequest", new ReserveSectionRequestDto());
+        ReserveSectionRequestDto rr = new ReserveSectionRequestDto();
+        rr.setMatchId(matchId);
+        model.addAttribute("reserveRequest", rr);
+
         model.addAttribute("payRequest", new PayRequestDto());
 
         return "checkout";
     }
+
 
     @PostMapping("/checkout/reserve")
     public String reserve(
@@ -76,4 +103,14 @@ public class CheckoutController {
         redirectAttributes.addFlashAttribute("paidInvoiceId", invoiceId.toString());
         return "redirect:/my-tickets";
     }
+
+    @PostMapping("/checkout/cancel")
+    public String cancel(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam UUID matchId
+    ) {
+        checkoutService.cancelReservedForMatch(userDetails.getUsername(), matchId);
+        return "redirect:/home";
+    }
+
 }

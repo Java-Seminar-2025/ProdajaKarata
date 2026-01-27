@@ -19,13 +19,13 @@
 
         <ul class="menu-items">
             <li>
-                <a href="#" class="active">
+                <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
                     Otkrij
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" class="active">
                     <ion-icon name="ticket-outline"></ion-icon>
                     Moje ulaznice
                 </a>
@@ -51,8 +51,8 @@
         <div class="user-profile">
             <div class="avatar"></div>
             <div class="user-info">
-                <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
-                <span class="role">Korisnik</span>
+                <span class="username" th:text="${user.username}"></span>
+                <span class="role" th:text="${user != null ? user.authorizationLevel : ''}"></span>
             </div>
         </div>
     </nav>
@@ -64,6 +64,59 @@
                 <h1>My Tickets</h1>
                 <p class="subtitle">Pregled tvojih kupljenih ulaznica</p>
             </div>
+
+            <div class="reservations-block" th:if="${activeReservations != null and !#lists.isEmpty(activeReservations)}">
+                <h2 class="section-title">Active reservations</h2>
+
+                <div class="tickets-grid">
+                    <div class="ticket-card" th:each="r : ${activeReservations}">
+
+                        <div class="ticket-top">
+                            <div class="icon-box">
+                                <ion-icon name="time-outline"></ion-icon>
+                            </div>
+                            <span class="status-badge status-pending">RESERVED</span>
+                        </div>
+
+                        <div class="ticket-details">
+                            <div class="detail-row">
+                                <span class="label">Section</span>
+                                <span class="value highlight" th:text="${r.sectionCode}"></span>
+                            </div>
+
+
+                            <div class="detail-row">
+                                <span class="label">Qty</span>
+                                <span class="value" th:text="${r.quantity}"></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="label">Owner</span>
+                                <span class="value" th:text="${r.ownerName}"></span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="label">Expires</span>
+                                <span class="value small-text" th:text="${#temporals.format(r.reservedUntil, 'dd.MM.yyyy HH:mm:ss')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="ticket-actions">
+                            <form th:action="@{/checkout/resume}" method="post">
+                                <input type="hidden" name="matchId" th:value="${r.matchId}">
+                                <input type="hidden" name="sectionCode" th:value="${r.sectionCode}">
+                                <input type="hidden" name="reservedUntil" th:value="${#temporals.format(r.reservedUntil, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                                <button type="submit" class="btn-resume">Resume</button>
+                            </form>
+                        </div>
+
+                        <div class="ticket-rip"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
 
             <div th:if="${#lists.isEmpty(tickets)}" class="empty-state">
                 <div class="empty-icon">
@@ -92,8 +145,14 @@
                     <div class="ticket-details">
                         <div class="detail-row">
                             <span class="label">Seat Info</span>
-                            <span class="value highlight" th:text="${seatByTicket[t.ticketUid]}"></span>
+                            <span class="value highlight" th:text="${seatByTicket[t.ticketUid] ?: 'N/A'}"></span>
                         </div>
+
+                        <div class="detail-row">
+                            <span class="label">Section</span>
+                            <span class="value highlight" th:text="${sectionByTicket[t.ticketUid] ?: 'N/A'}"></span>
+                        </div>
+
 
                         <div class="detail-row">
                             <span class="label">Owner</span>
@@ -107,6 +166,19 @@
                                   th:title="${t.invoiceEntity != null ? t.invoiceEntity.invoiceUid : ''}">
                             </span>
                         </div>
+                    </div>
+
+                    <div class="ticket-actions"
+                         th:if="${t.status == 'PAID' and T(java.lang.Boolean).TRUE.equals(refundable[t.ticketUid])}"
+>
+
+                    <form th:action="@{/refund}" method="post">
+                            <input type="hidden" name="ticketId" th:value="${t.ticketUid}">
+                            <button type="submit" class="btn-refund">
+                                Refund
+                            </button>
+                        </form>
+
                     </div>
 
                     <div class="ticket-rip"></div>

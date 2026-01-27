@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,28 +20,40 @@
             <li>
                 <a href="#" class="active">
                     <ion-icon name="compass-outline"></ion-icon>
-                    Discover
+                    Otkrij
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a th:href="@{/my-tickets}">
                     <ion-icon name="ticket-outline"></ion-icon>
-                    My Tickets
+                    Moje ulaznice
                 </a>
             </li>
-            <li>
-                <a href="#">
+            <li class="settings-item">
+                <a href="#" class="settings-link">
                     <ion-icon name="settings-outline"></ion-icon>
-                    Settings
+                    Postavke
+                    <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
                 </a>
+                <div class="dropdown-menu">
+                    <a th:href="@{/settings}">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        Postavke računa
+                    </a>
+                    <a th:href="@{/logout}" class="sign-out">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        Odjavi se
+                    </a>
+                </div>
             </li>
         </ul>
 
         <div class="user-profile">
-            <div class="avatar"></div> <div class="user-info">
-            <span class="username" th:text="${username}"></span>
-            <span class="role" th:text="${role}"></span>
-        </div>
+            <div class="avatar"></div>
+            <div class="user-info">
+                <span class="username" th:text="${user.username}"></span>
+                <span class="role" th:text="${role}"></span>
+            </div>
         </div>
     </nav>
 
@@ -51,13 +61,119 @@
         <header>
             <h1>Upcoming games</h1>
 
-            <form th:action="@{/home}" method="get" style="display:flex; gap:0; align-items:center; margin-left:auto;">
-                <input type="text" class="search-bar" name="q" th:value="${q}" placeholder="Search...">
-                <button class="btn-search" type="submit">
-                    <ion-icon name="search-circle-outline"></ion-icon>
-                </button>
-            </form>
+            <div class="header-actions">
+                <form th:action="@{/home}" method="get" class="search-form">
+                    <input type="text" class="search-bar" name="q" th:value="${filter.q}" placeholder="Search...">
+
+                    <button class="btn-search" type="submit">
+                        <ion-icon name="search-circle-outline"></ion-icon>
+                    </button>
+
+                    <button type="button" class="filters-toggle" onclick="toggleFilters()">
+                        <ion-icon name="options-outline"></ion-icon>
+                        Filters
+                    </button>
+                </form>
+            </div>
+
+            <div class="basket">
+                <ion-icon name="cart-outline"></ion-icon>
+            </div>
         </header>
+
+        <div id="filtersPanel" class="filters-panel is-hidden">
+            <form th:action="@{/home}" method="get" class="filters-form">
+
+                <input type="hidden" name="q" th:value="${filter.q}"/>
+
+                <input type="hidden" id="currentCityId" th:value="${filter.cityId}">
+                <input type="hidden" id="currentTimeFrom" th:value="${filter.timeFrom}">
+                <input type="hidden" id="currentTimeTo" th:value="${filter.timeTo}">
+
+                <div class="filters-grid">
+
+                    <div class="filter-field filter-competition">
+                        <label>Competition</label>
+                        <select name="competitions" class="filter-input">
+                            <option value="">All</option>
+                            <option th:each="c : ${competitionOptions}"
+                                    th:value="${c}"
+                                    th:text="${c}"
+                                    th:selected="${filter.competitions != null and filter.competitions.contains(c)}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field filter-price">
+                        <label>Price (€)</label>
+                        <div class="range-row">
+                            <span id="minPriceLabel">Min: €0</span>
+                            <input type="range" id="minPrice" name="minPrice" min="0" max="200" step="1"
+                                   th:value="${filter.minPrice != null ? filter.minPrice : 0}">
+                            <input type="range" id="maxPrice" name="maxPrice" min="0" max="200" step="1"
+                                   th:value="${filter.maxPrice != null ? filter.maxPrice : 200}">
+                            <span id="maxPriceLabel">Max: €200</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-field filter-datefrom">
+                        <label>Date from</label>
+                        <input type="date" class="filter-input" name="dateFrom" th:value="${filter.dateFrom}">
+                    </div>
+
+                    <div class="filter-field filter-dateto">
+                        <label>Date to</label>
+                        <input type="date" class="filter-input" name="dateTo" th:value="${filter.dateTo}">
+                    </div>
+
+                    <div class="filter-field filter-timefrom">
+                        <label>Time from</label>
+                        <select class="filter-input" name="timeFrom" id="timeFromSelect">
+                            <option value="">--:--</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field filter-timeto">
+                        <label>Time to</label>
+                        <select class="filter-input" name="timeTo" id="timeToSelect">
+                            <option value="">--:--</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-row2-spacer"></div>
+
+                    <div class="filter-field filter-club">
+                        <label>Club</label>
+                        <input type="text" class="filter-input" name="club" th:value="${filter.club}" placeholder="e.g. Bayern">
+                    </div>
+
+                    <div class="filter-field filter-country">
+                        <label>Country</label>
+                        <select name="countryId" id="countryId" class="filter-input" onchange="loadCities()">
+                            <option value="">All</option>
+                            <option th:each="c : ${countries}"
+                                    th:value="${c.countryUid}"
+                                    th:text="${c.countryName}"
+                                    th:selected="${filter.countryId != null and filter.countryId == c.countryUid}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="filter-field filter-city">
+                        <label>City</label>
+                        <select name="cityId" id="cityId" class="filter-input" disabled>
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="filters-actions">
+                    <button class="filters-apply" type="submit">Apply</button>
+                    <a class="filters-clear" th:href="@{/home}">Clear</a>
+                </div>
+            </form>
+        </div>
 
         <div class="cards-grid">
             <div class="card" th:each="m : ${matches}">
@@ -71,10 +187,95 @@
             </div>
         </div>
     </main>
-
 </div>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function toggleFilters() {
+        document.getElementById("filtersPanel").classList.toggle("is-hidden");
+    }
+
+    function clampPriceRanges() {
+        const min = document.getElementById("minPrice");
+        const max = document.getElementById("maxPrice");
+        if (parseInt(min.value) > parseInt(max.value)) {
+            max.value = min.value;
+        }
+        document.getElementById("minPriceLabel").textContent = "Min: €" + min.value;
+        document.getElementById("maxPriceLabel").textContent = "Max: €" + max.value;
+    }
+
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
+    function buildTimeOptions(selectEl, currentValue) {
+        let normalized = currentValue ? String(currentValue).substring(0, 5) : "";
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                const v = `${pad2(h)}:${pad2(m)}`;
+                const opt = document.createElement("option");
+                opt.value = v;
+                opt.textContent = v;
+                if (normalized === v) opt.selected = true;
+                selectEl.appendChild(opt);
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const min = document.getElementById("minPrice");
+        const max = document.getElementById("maxPrice");
+
+        if (min && max) {
+            min.addEventListener("input", clampPriceRanges);
+            max.addEventListener("input", clampPriceRanges);
+            clampPriceRanges();
+        }
+
+
+        const fromSel = document.getElementById("timeFromSelect");
+        const toSel = document.getElementById("timeToSelect");
+        if (fromSel && toSel) {
+            const currentFrom = document.getElementById("currentTimeFrom")?.value;
+            const currentTo = document.getElementById("currentTimeTo")?.value;
+            buildTimeOptions(fromSel, currentFrom);
+            buildTimeOptions(toSel, currentTo);
+        }
+
+        loadCities(true);
+    });
+
+    async function loadCities(initial=false) {
+        const countrySel = document.getElementById("countryId");
+        const citySel = document.getElementById("cityId");
+        const currentCityId = document.getElementById("currentCityId")?.value;
+
+        if (!countrySel || !citySel) return;
+
+        const countryId = countrySel.value;
+
+        citySel.innerHTML = '<option value="">All</option>';
+        citySel.disabled = true;
+
+        if (!countryId) return;
+
+        const res = await fetch(`/api/geo/cities?countryId=${countryId}`);
+        if (!res.ok) return;
+
+        const cities = await res.json();
+        for (const c of cities) {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.name;
+            if (currentCityId && currentCityId === c.id) {
+                opt.selected = true;
+            }
+            citySel.appendChild(opt);
+        }
+        citySel.disabled = false;
+    }
+</script>
+
 </body>
 </html>
