@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Tickets Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-body">
+
+<div class="ticket-view-container">
+
+    <div class="header-row">
+        <a th:href="@{/admin/dashboard}" class="back-link">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+            Povratak
+        </a>
+    </div>
+
+    <div class="title-section">
+        <h2>Tickets for <span th:text="${user.username}">User</span></h2>
+        <div th:if="${param.success}" class="success-alert">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Ticket deleted successfully!
+        </div>
+    </div>
+
+    <div class="user-table-container">
+        <table class="user-table">
+            <thead>
+            <tr>
+                <th>Owner</th>
+                <th>PIN</th>
+                <th>Status</th>
+                <th style="text-align: center;">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.ownerName}">Ime</td>
+                <td th:text="${ticket.pin}">12345</td>
+                <td>
+                    <span th:class="'badge status-' + ${ticket.status.toLowerCase()}"
+                          th:text="${ticket.status}">STATUS</span>
+                </td>
+                <td style="text-align: center;">
+                    <form th:action="@{/admin/tickets/delete/{id}(id=${ticket.ticketUid})}" method="post">
+                        <button type="submit" class="delete-btn"
+                                onclick="return confirm('Are you sure you want to delete this ticket?')">
+                            <ion-icon name="trash-outline"></ion-icon>
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(tickets)}">
+                <td colspan="4" class="empty-state">No tickets found for this user.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

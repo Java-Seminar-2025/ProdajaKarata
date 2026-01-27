@@ -43,6 +43,7 @@ com\football\ticketsale\repository\FootballClubRepository.class
 com\football\ticketsale\entity\TicketTierEntity.class
 com\football\ticketsale\repository\InvoiceRepository.class
 com\football\ticketsale\config\AppConfig.class
+com\football\ticketsale\dto\admin\TicketDto.class
 com\football\ticketsale\service\MatchService.class
 com\football\ticketsale\repository\CityRepository.class
 com\football\ticketsale\repository\StadiumRepository.class

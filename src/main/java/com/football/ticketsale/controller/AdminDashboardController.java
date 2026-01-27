@@ -1,17 +1,19 @@
 package com.football.ticketsale.controller;
 
 import com.football.ticketsale.dto.admin.CreateMatchForm;
+import com.football.ticketsale.entity.InvoiceEntity;
+import com.football.ticketsale.entity.TicketEntity;
 import com.football.ticketsale.entity.UserEntity;
-import com.football.ticketsale.repository.FootballClubRepository;
-import com.football.ticketsale.repository.MatchRepository;
-import com.football.ticketsale.repository.StadiumRepository;
-import com.football.ticketsale.repository.UserRepository;
+import com.football.ticketsale.repository.*;
 import com.football.ticketsale.service.MatchService;
 import com.football.ticketsale.service.MatchSyncService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -25,6 +27,10 @@ public class AdminDashboardController {
     private final StadiumRepository stadiumRepository;
     private final MatchSyncService matchSyncService;
     private final MatchService matchService;
+    private final TicketRepository ticketRepository;
+
+    // wip dio
+    private final InvoiceRepository invoiceRepository;
 
     public AdminDashboardController(
             MatchRepository matchRepository,
@@ -32,7 +38,7 @@ public class AdminDashboardController {
             FootballClubRepository clubRepository,
             StadiumRepository stadiumRepository,
             MatchSyncService matchSyncService,
-            MatchService matchService
+            MatchService matchService, TicketRepository ticketRepository, InvoiceRepository invoiceRepository
     ) {
         this.matchRepository = matchRepository;
         this.userRepository = userRepository;
@@ -40,6 +46,8 @@ public class AdminDashboardController {
         this.stadiumRepository = stadiumRepository;
         this.matchSyncService = matchSyncService;
         this.matchService = matchService;
+        this.ticketRepository = ticketRepository;
+        this.invoiceRepository = invoiceRepository;
     }
 
     @GetMapping("/dashboard")
@@ -56,6 +64,41 @@ public class AdminDashboardController {
         model.addAttribute("stadiums", stadiumRepository.findAll());
         model.addAttribute("createMatchForm", new CreateMatchForm());
         return "admin/dashboard";
+    }
+
+    @GetMapping("/users/{userId}/tickets-view")
+    public String openUserTicketPage(@PathVariable UUID userId, Model model) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+        List<TicketEntity> tickets = ticketRepository.findByUserEntity(user);
+        model.addAttribute("user", user);
+        model.addAttribute("tickets", tickets);
+        return "admin/user_tickets";
+    }
+
+    @PostMapping("/tickets/delete/{ticketId}")
+    public String deleteUserTicket(@PathVariable UUID ticketId) {
+        TicketEntity ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IllegalArgumentException("krivi id"));
+        UUID userId = ticket.getUserEntity().getUserUid();
+        ticketRepository.delete(ticket);
+        return "redirect:/admin/users/" + userId + "/tickets-view?success";
+    }
+
+    @GetMapping("/invoices")
+    public String viewAllInvoices(Model model) {
+        List<InvoiceEntity> invoices = invoiceRepository.findAll();
+
+        BigDecimal totalRevenue = invoices.stream()
+                        .map(InvoiceEntity::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("invoices", invoices);
+        model.addAttribute("invoiceCount", invoiceRepository.count());
+
+        model.addAttribute("totalRevenue", totalRevenue);
+
+        return "admin/invoices";
     }
 
     @PostMapping("/sync-matches")

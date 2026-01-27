@@ -263,6 +263,10 @@ body {
     color: #a8ff78;
 }
 
+.user-name-text:hover {
+    color: #fff;
+}
+
 .user-uid-text {
     font-size: 0.75rem;
     color: #aaa;
@@ -372,4 +376,104 @@ form.create-match-form {
     background-color: #141514;
     color: white;
     padding: 10px;
+}
+
+/*stranica ticket user nesto tako*/
+
+.ticket-view-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-row {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.back-link:hover {
+    color: #388E3C;
+    transform: translateX(-5px);
+}
+
+.title-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.title-section h2 {
+    color: #ffffff;
+    font-size: 2rem;
+}
+
+.title-section h2 span {
+    color: #4CAF50;
+}
+
+.success-alert {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px !important;
+    color: #888;
+    font-style: italic;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-paid {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.status-reserved {
+    background: rgba(255, 152, 0, 0.2);
+    color: #FF9800;
+}
+
+.delete-btn {
+    background: transparent;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    background: #e74c3c;
+    color: white;
 }

@@ -56,4 +56,7 @@ public class TicketEntity {
             status = "pending";
         }
     }
+
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private SeatReservationEntity seatReservation;
 }

@@ -66,6 +66,14 @@
                 <b th:text="${matchCount}">0</b>
             </div>
         </div>
+        <div class="stat-card" style="cursor: pointer;" th:onclick="|window.location.href='/admin/invoices'|">
+            <div class="icon-box" style="background: rgba(76, 175, 80, 0.1); color: #4CAF50;">
+                <ion-icon name="receipt-outline"></ion-icon>
+            </div>
+            <div class="stat-info">
+                <h3>Pregled Računa</h3>
+            </div>
+        </div>
     </div>
 
     <section class="action-section">
@@ -86,7 +94,11 @@
                 <tr th:each="user : ${users}">
                     <td>
                         <div class="user-info-cell">
-                            <span class="user-name-text" th:text="${user.username}">Username</span>
+                            <a th:href="@{/admin/users/{uid}/tickets-view(uid=${user.userUid})}"
+                               class="user-name-text"
+                               style="color: #3498db; cursor: pointer;">
+                                <span class="user-name-text" th:text="${user.username}">Username</span>
+                            </a>
                             <span class="user-uid-text" th:text="${user.userUid}">UUID</span>
                         </div>
                     </td>
