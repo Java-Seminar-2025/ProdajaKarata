@@ -14,9 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
@@ -30,8 +28,11 @@ public class MatchService {
     @Autowired
     private StadiumRepository stadiumRepository;
 
+
+    // ovo minja za fix admin kreiranje karata
     public MatchEntity createMatch(UUID homeClubId, UUID awayClubId, UUID stadiumId,
-                                   LocalDateTime matchTime, BigDecimal price) {
+                                   LocalDateTime matchTime, BigDecimal price,
+                                   String competitionCode, String status) {
 
         if (homeClubId.equals(awayClubId)) {
             throw new IllegalArgumentException("nemoš igrat protiv sebe");
@@ -50,6 +51,10 @@ public class MatchService {
         match.setStadium(stadium);
         match.setMatchDatetime(matchTime);
         match.setBaseTicketPriceUsd(price);
+
+        // ovo
+        match.setCompetitionCode(competitionCode);
+        match.setStatus(status);
 
         return matchRepository.save(match);
     }

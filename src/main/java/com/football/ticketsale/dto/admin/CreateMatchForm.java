@@ -15,6 +15,9 @@ public class CreateMatchForm {
     private LocalDateTime matchDateTime;
     private BigDecimal price;
 
+    private String competitionCode;
+    private String status;
+
 
     public UUID getHomeClubId() {
         return homeClubId;
@@ -63,5 +66,21 @@ public class CreateMatchForm {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public void setCompetitionCode(String competitionCode) {
+        this.competitionCode = competitionCode;
+    }
+
+    public String getCompetitionCode() {
+        return competitionCode;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

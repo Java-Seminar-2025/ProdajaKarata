@@ -73,6 +73,8 @@ public class AdminDashboardController {
         }
         return "redirect:/admin/dashboard?success=User promoted successfully!";
     }
+
+    // ovo
     @PostMapping("matches/create")
     public String createMatch(@ModelAttribute CreateMatchForm form) {
 
@@ -82,7 +84,10 @@ public class AdminDashboardController {
                 form.getAwayClubId(),
                 form.getStadiumId(),
                 form.getMatchDateTime(),
-                form.getPrice()
+                form.getPrice(),
+
+                form.getCompetitionCode(),
+                form.getStatus()
         );
 
 

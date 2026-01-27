@@ -15,6 +15,7 @@ com\football\ticketsale\controller\AuthController.class
 com\football\ticketsale\service\MatchSyncJob.class
 com\football\ticketsale\repository\TicketRepository.class
 com\football\ticketsale\entity\CountryEntity.class
+com\football\ticketsale\dto\admin\CreateMatchForm.class
 com\football\ticketsale\entity\UserEntity.class
 com\football\ticketsale\repository\UserRepository.class
 com\football\ticketsale\controller\ProfileController.class

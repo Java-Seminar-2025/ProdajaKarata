@@ -29,7 +29,9 @@ public class MatchController {
                 request.getAwayClubId(),
                 request.getStadiumId(),
                 request.getMatchDateTime(),
-                request.getPrice()
+                request.getPrice(),
+                request.getCompetitionCode(),
+                request.getStatus()
         );
         return ResponseEntity.ok(createdMatch);
     }

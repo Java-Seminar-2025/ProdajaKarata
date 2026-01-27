@@ -142,6 +142,120 @@
         </div>
     </section>
 
+    <form th:action="@{/admin/matches/create}"
+          th:object="${createMatchForm}"
+          method="post"
+          class="action-card">
+
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+
+        <label>Home Team</label>
+        <select th:field="*{homeClubId}" required>
+            <option th:each="c : ${clubs}"
+                    th:value="${c.clubUid}"
+                    th:text="${c.clubName}"></option>
+        </select>
+
+        <label>Away Team</label>
+        <select th:field="*{awayClubId}" required>
+            <option th:each="c : ${clubs}"
+                    th:value="${c.clubUid}"
+                    th:text="${c.clubName}"></option>
+        </select>
+
+        <label>Stadium</label>
+        <select th:field="*{stadiumId}" required>
+            <option th:each="s : ${stadiums}"
+                    th:value="${s.stadiumUid}"
+                    th:text="${s.stadiumName}"></option>
+        </select>
+
+        <label>League Code (e.g. HNL, BL1)</label>
+        <input type="text" th:field="*{competitionCode}" placeholder="HNL" required />
+
+        <label>Status</label>
+        <select th:field="*{status}" required>
+            <option value="TIMED">TIMED (Active)</option>
+            <option value="SCHEDULED">SCHEDULED</option>
+            <option value="CANCELLED">CANCELLED</option>
+        </select>
+
+        <label>Date & Time</label>
+        <input type="datetime-local"
+               th:field="*{matchDateTime}"
+               required />
+
+        <label>Ticket Price (USD)</label>
+        <input type="number"
+               step="0.01"
+               th:field="*{price}"
+               required />
+
+        <button type="submit" class="sync-btn">
+            ➕ Create Match
+        </button>
+    </form>
+
+<!--    <form th:action="@{/admin/matches/create}"-->
+<!--          th:object="${createMatchForm}"-->
+<!--          method="post"-->
+<!--          class="action-card">-->
+
+
+<!--        <input type="hidden"-->
+<!--               th:name="${_csrf.parameterName}"-->
+<!--               th:value="${_csrf.token}" />-->
+
+
+<!--        <label>Home Team</label>-->
+<!--        <select th:field="*{homeClubId}" required>-->
+<!--            <option th:each="c : ${clubs}"-->
+<!--                    th:value="${c.clubUid}"-->
+<!--                    th:text="${c.clubName}"></option>-->
+<!--        </select>-->
+
+
+<!--        <label>Away Team</label>-->
+<!--        <select th:field="*{awayClubId}" required>-->
+<!--            <option th:each="c : ${clubs}"-->
+<!--                    th:value="${c.clubUid}"-->
+<!--                    th:text="${c.clubName}"></option>-->
+<!--        </select>-->
+
+
+<!--        <label>Stadium</label>-->
+<!--        <select th:field="*{stadiumId}" required>-->
+<!--            <option th:each="s : ${stadiums}"-->
+<!--                    th:value="${s.stadiumUid}"-->
+<!--                    th:text="${s.stadiumName}"></option>-->
+<!--        </select>-->
+
+
+<!--        <label>Date & Time</label>-->
+<!--        <input type="datetime-local"-->
+<!--               th:field="*{matchDateTime}"-->
+<!--               required />-->
+
+
+<!--        <label>Ticket Price (USD)</label>-->
+<!--        <input type="number"-->
+<!--               step="0.01"-->
+<!--               th:field="*{price}"-->
+<!--               required />-->
+
+
+<!--        <button type="submit" class="sync-btn">-->
+<!--            ➕ Create Match-->
+<!--        </button>-->
+<!--    </form>-->
+
+
+    <div th:if="${param.matchCreated}" class="success-message">
+        Match created successfully
+    </div>
+
 </main>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
