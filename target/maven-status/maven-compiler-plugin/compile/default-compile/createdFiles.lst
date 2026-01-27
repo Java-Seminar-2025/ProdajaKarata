@@ -37,6 +37,7 @@ com\football\ticketsale\entity\MatchCompetitorId.class
 com\football\ticketsale\integration\footballdata\FootballDataClient.class
 com\football\ticketsale\dto\checkout\ReservedTicketDto.class
 com\football\ticketsale\service\CustomUserDetailsService.class
+com\football\ticketsale\controller\AdminDashboardController.class
 com\football\ticketsale\repository\FootballClubRepository.class
 com\football\ticketsale\entity\TicketTierEntity.class
 com\football\ticketsale\repository\InvoiceRepository.class
@@ -55,7 +56,6 @@ com\football\ticketsale\entity\FootballClubEntity.class
 com\football\ticketsale\entity\StadiumSectionEntity.class
 com\football\ticketsale\service\MatchSyncService.class
 com\football\ticketsale\controller\CheckoutController.class
-com\football\ticketsale\controller\admin\AdminDashboardController.class
 com\football\ticketsale\controller\StadiumController.class
 com\football\ticketsale\controller\HomeController.class
 com\football\ticketsale\controller\MatchController.class
