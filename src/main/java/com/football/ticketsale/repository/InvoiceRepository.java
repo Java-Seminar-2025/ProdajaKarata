@@ -13,4 +13,5 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, UUID> {
     List<InvoiceEntity> findByUser(UserEntity user);
     List<InvoiceEntity> findByPaymentStatus(String paymentStatus);
     Optional<InvoiceEntity> findByPaypalPaymentId(String paypalPaymentId);
+
 }

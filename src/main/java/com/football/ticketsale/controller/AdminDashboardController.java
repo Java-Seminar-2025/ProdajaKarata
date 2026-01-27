@@ -81,6 +81,10 @@ public class AdminDashboardController {
         TicketEntity ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new IllegalArgumentException("krivi id"));
         UUID userId = ticket.getUserEntity().getUserUid();
+        InvoiceEntity invoice=  ticket.getInvoiceEntity();
+        if (invoice != null) {
+            invoiceRepository.delete(invoice);
+        }
         ticketRepository.delete(ticket);
         return "redirect:/admin/users/" + userId + "/tickets-view?success";
     }
