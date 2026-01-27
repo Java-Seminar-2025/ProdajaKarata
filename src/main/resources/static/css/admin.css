@@ -309,3 +309,67 @@ body {
     padding: 8px 0;
 }
 
+/* za onu najnoviju sekciju*/
+
+
+form.create-match-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #b0b0b0;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(20, 21, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s ease;
+
+    color-scheme: dark;
+}
+
+.form-group input:hover,
+.form-group select:hover {
+    border-color: rgba(168, 255, 120, 0.3);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #a8ff78;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(168, 255, 120, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #555;
+}
+
+.form-group select option {
+    background-color: #141514;
+    color: white;
+    padding: 10px;
+}
