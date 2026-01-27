@@ -1,0 +1,2 @@
+ALTER TABLE ticket
+ADD COLUMN section_code VARCHAR(10) NULL;

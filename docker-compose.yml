@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_USER: appuser
       MYSQL_PASSWORD: apppassword
-      MYSQL_ROOT_PASSWORD: "tIN**613"
+      MYSQL_ROOT_PASSWORD: "ironmaiden"
       MYSQL_DATABASE: "football_ticket_sale_db"
     ports:
       - "3306:3306"
@@ -16,9 +16,11 @@ services:
     networks:
       - football-network
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-u", "root", "-pironmaiden"]
+      interval: 5s
       timeout: 20s
       retries: 10
+      start_period: 10s
 
   app:
     build:
@@ -30,7 +32,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/football_ticket_sale_db?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: "tIN**613"
+      SPRING_DATASOURCE_PASSWORD: "ironmaiden"
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
       SPRING_FLYWAY_ENABLED: "true"
       SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"

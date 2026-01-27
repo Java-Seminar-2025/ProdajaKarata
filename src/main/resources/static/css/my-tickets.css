@@ -154,3 +154,59 @@
     border-top: 2px dashed rgba(255, 255, 255, 0.1);
     display: none;
 }
+
+.ticket-actions {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.btn-refund {
+    background: transparent;
+    border: 1px solid #ff5c5c;
+    color: #ff5c5c;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-refund:hover {
+    background: rgba(255, 92, 92, 0.15);
+}
+
+.btn-refund:active {
+    transform: scale(0.97);
+}
+
+.section-title {
+  margin: 10px 0 18px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.ticket-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-resume {
+  border: 1px solid rgba(168, 255, 120, 0.35);
+  background: rgba(168, 255, 120, 0.12);
+  color: #a8ff78;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-resume:hover {
+  background: rgba(168, 255, 120, 0.18);
+  border-color: rgba(168, 255, 120, 0.6);
+}
+
