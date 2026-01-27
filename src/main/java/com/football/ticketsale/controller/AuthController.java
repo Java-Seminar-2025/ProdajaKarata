@@ -1,6 +1,6 @@
 package com.football.ticketsale.controller;
 
-import com.football.ticketsale.dto.UserDto;
+import com.football.ticketsale.dto.UserRegistrationDto;
 import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.service.UserService;
 import jakarta.validation.Valid;
@@ -27,13 +27,13 @@ public class AuthController {
 
     @GetMapping("/signup")
     public String showRegistrationForm(Model model) {
-        UserDto user = new UserDto();
+        UserRegistrationDto user = new UserRegistrationDto();
         model.addAttribute("user", user);
         return "signup";
     }
 
     @PostMapping("/signup/save")
-    public String registration(@Valid @ModelAttribute("user") UserDto userDto,
+    public String registration(@Valid @ModelAttribute("user") UserRegistrationDto userDto,
                                BindingResult result,
                                Model model) {
 

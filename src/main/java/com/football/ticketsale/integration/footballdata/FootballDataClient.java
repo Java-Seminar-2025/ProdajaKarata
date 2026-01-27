@@ -20,7 +20,7 @@ public class FootballDataClient {
     public MatchesResponse getUpcomingMatches(String competitionCode, String dateFrom, String dateTo) {
         String url = UriComponentsBuilder
                 .fromHttpUrl(props.getBaseUrl() + "/competitions/" + competitionCode + "/matches")
-                .queryParam("dateFrom", dateFrom) // yyyy-MM-dd
+                .queryParam("dateFrom", dateFrom)
                 .queryParam("dateTo", dateTo)
                 .toUriString();
 

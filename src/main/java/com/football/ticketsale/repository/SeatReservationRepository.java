@@ -37,7 +37,7 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
                               @Param("start") Integer start,
                               @Param("end") Integer end);
 
-    // Existing: active RESERVED seats only (kept, used sometimes)
+
     @Query("""
         select sr.seatNumber
         from SeatReservationEntity sr
@@ -69,7 +69,7 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
                                     @Param("end") Integer end,
                                     @Param("now") LocalDateTime now);
 
-    // ✅ NEW: seats taken by either PAID or active RESERVED (this is the real "occupied seats" set)
+
     @Query("""
         select sr.seatNumber
         from SeatReservationEntity sr

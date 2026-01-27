@@ -62,12 +62,10 @@ public class MyTicketsController {
         for (TicketEntity t : paid) {
             SeatReservationEntity sr = seatReservationRepository.findByTicket(t).orElse(null);
 
-            // Seat info
             if (sr != null) {
                 seatByTicket.put(t.getTicketUid(), sr.getSeatNumber());
             }
 
-            // Section info (older tickets may have NULL section_code in DB; backfill it)
             String sectionCode = t.getSectionCode();
             if ((sectionCode == null || sectionCode.isBlank()) && sr != null) {
                 sectionCode = resolveSectionCode(sr);
@@ -78,7 +76,6 @@ public class MyTicketsController {
             }
             sectionByTicket.put(t.getTicketUid(), sectionCode);
 
-            // Refund rule
             if (sr != null) {
                 boolean allowed = sr.getMatch().getMatchDatetime().isAfter(LocalDateTime.now().plusDays(3));
                 refundable.put(t.getTicketUid(), allowed);

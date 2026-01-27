@@ -67,7 +67,6 @@ public class CheckoutService {
             int start = s.getSeatStart();
             int end = s.getSeatEnd();
 
-            // ✅ count seats taken by PAID + active RESERVED
             long taken = seatReservationRepository.countTakenInRange(match, start, end, now);
 
             long total = (long) end - start + 1;
@@ -105,7 +104,6 @@ public class CheckoutService {
         MatchEntity match = matchRepository.findById(req.getMatchId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        // Only one active reservation per match (per user)
         List<TicketEntity> existingForMatch = ticketRepository.findReservedTicketsForUserAndMatch(
                 user.getUserUid(),
                 req.getMatchId(),
@@ -127,7 +125,6 @@ public class CheckoutService {
         int start = section.getSeatStart();
         int end = section.getSeatEnd();
 
-        // ✅ Treat PAID seats as taken too
         List<Integer> taken = seatReservationRepository.findTakenSeatNumbersInRange(match, start, end, now);
         Set<Integer> takenSet = new HashSet<>(taken);
 
@@ -150,7 +147,6 @@ public class CheckoutService {
         try {
             for (Integer seatNumber : selected) {
 
-                // Extra safety: never allow re-assigning an existing (match,seat) row
                 if (seatReservationRepository.existsByMatchAndSeatNumber(match, seatNumber)) {
                     throw new IllegalStateException("Some seats were just taken. Please try again.");
                 }

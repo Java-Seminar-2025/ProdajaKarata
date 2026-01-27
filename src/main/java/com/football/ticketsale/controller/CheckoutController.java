@@ -52,7 +52,6 @@ public class CheckoutController {
         if (resumed != null) {
             model.addAttribute("reserved", resumed);
             model.addAttribute("payRequest", new PayRequestDto());
-            // You can skip sections/availability because payment page doesn't need them
             return "checkout";
         }
 

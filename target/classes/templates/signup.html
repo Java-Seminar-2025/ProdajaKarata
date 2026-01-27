@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Football Ticket Sale App - Sign Up</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="background">
+    <div class="box"></div>
+</div>
+
+<form class="signup-form" th:action="@{/signup/save}" method="post" th:object="${user}">
+    <h3>Create Account</h3>
+
+    <div th:if="${param.success}">
+        <div class="alert alert-success">Registration successful! Please login.</div>
+    </div>
+
+    <label for="fullName" class="labelSignup">Full name</label>
+    <input type="text" placeholder="Full name" id="fullName" th:field="*{fullName}" required>
+    <div th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="error"></div>
+
+    <label for="email" class="labelSignup">Email</label>
+    <input type="email" placeholder="Email" id="email" th:field="*{email}" required>
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+
+    <label for="username" class="labelSignup">Username</label>
+    <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
+    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></div>
+
+    <label for="password" class="labelSignup">Password</label>
+    <input type="password" placeholder="Password" id="password" th:field="*{password}" required>
+    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+
+    <label for="repeat_password" class="labelSignup">Repeat password</label>
+    <input type="password" placeholder="Repeat password" id="repeat_password" th:field="*{repeatPassword}" required>
+    <div th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{repeatPassword}" class="error"></div>
+
+    <button type="submit" class="signupButton">Sign Up</button>
+
+</form>
+</body>
+</html>
