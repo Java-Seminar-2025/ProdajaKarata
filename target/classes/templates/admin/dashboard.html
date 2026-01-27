@@ -31,6 +31,11 @@
         <h1>System Overview</h1>
     </header>
 
+    <div th:if="${param.success}" class="alert-success">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <span th:text="${param.success}">Operation successful</span>
+    </div>
+
     <div class="stats-grid">
         <div class="stat-card">
             <div class="icon-box user-color">
@@ -62,6 +67,56 @@
             </div>
         </div>
     </div>
+
+    <section class="action-section">
+        <div class="section-header">
+            <h2>User Management</h2>
+        </div>
+
+        <div class="user-table-container">
+            <table class="user-table">
+                <thead>
+                <tr>
+                    <th>User Details</th>
+                    <th>Current Role</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td>
+                        <div class="user-info-cell">
+                            <span class="user-name-text" th:text="${user.username}">Username</span>
+                            <span class="user-uid-text" th:text="${user.userUid}">UUID</span>
+                        </div>
+                    </td>
+
+                    <td>
+                <span th:class="${'badge ' + (user.authorizationLevel == 'admin' ? 'badge-admin' : 'badge-user')}"
+                      th:text="${user.authorizationLevel}">
+                </span>
+                    </td>
+
+                    <td>
+                        <form th:if="${user.authorizationLevel != 'admin'}"
+                              th:action="@{/admin/promote/{userId}(userId=${user.userUid})}"
+                              method="post">
+                            <button type="submit" class="promote-btn">
+                                <ion-icon name="arrow-up-circle-outline"></ion-icon>
+                                Promote to Admin
+                            </button>
+                        </form>
+
+                        <div th:if="${user.authorizationLevel == 'admin'}" class="admin-status">
+                            <ion-icon name="shield-checkmark"></ion-icon>
+                            <span>Already Admin</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
     <section class="action-section">
         <div class="section-header">

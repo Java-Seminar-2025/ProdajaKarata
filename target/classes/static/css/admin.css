@@ -149,6 +149,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 15px;
     padding: 25px;
+    margin-bottom: 15px;
 }
 
 .section-header {
@@ -215,3 +216,96 @@ body {
     font-size: 14px;
     font-weight: 500;
 }
+
+/* ka ako ne radi makni */
+
+.user-table-container {
+    overflow-x: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-top: 3rem;
+    color: #fff;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.user-table th {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 600;
+    padding: 1rem 4rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-table td {
+    padding: 1rem 4rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ddd;
+    vertical-align: middle;
+}
+
+.user-info-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.user-name-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a8ff78;
+}
+
+.user-uid-text {
+    font-size: 0.75rem;
+    color: #aaa;
+    font-family: monospace;
+}
+
+.promote-btn {
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+    margin-top: 0;
+
+    background: transparent;
+    border: 1px solid #a7ff78c6;
+    color: #a8ff78;
+
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.promote-btn:hover {
+    background: linear-gradient(to right, #a7ff78e5, #78ffd7e4);
+    color: #141514;
+    border-color: transparent;
+}
+
+.admin-status {
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 0;
+}
+
