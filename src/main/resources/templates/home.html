@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,9 +77,14 @@
                     </button>
                 </form>
             </div>
-
-            <div class="basket">
-                <ion-icon name="cart-outline"></ion-icon>
+<!--            <div class="basket">-->
+<!--                <ion-icon name="cart-outline"></ion-icon>-->
+<!--            </div>-->
+            <div sec:authorize="hasRole('ADMIN')" class="basket">
+                <a th:href="@{/admin/dashboard}"
+                   style="text-decoration: none; color: inherit;">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                </a>
             </div>
         </header>
 

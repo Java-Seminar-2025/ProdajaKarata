@@ -477,3 +477,23 @@ form.create-match-form {
     background: #e74c3c;
     color: white;
 }
+
+.view-user-btn {
+    margin-right: 15px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.view-user-btn:hover {
+    cursor: pointer;
+    color: #a8ff78;
+    transform: scale(1.1);
+}
+
+.view-user-btn ion-icon {
+    font-size: 1.2rem;
+}

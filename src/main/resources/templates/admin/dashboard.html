@@ -17,6 +17,9 @@
     </div>
 
     <div class="nav-profile">
+        <a th:href="@{/home}" class="view-user-btn">
+            <ion-icon name="eye-outline"></ion-icon>
+        </a>
         <span class="admin-name">Welcome, <span sec:authentication="name"></span></span>
 
         <a th:href="@{/logout}" class="logout-btn">
