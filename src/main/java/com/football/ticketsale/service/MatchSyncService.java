@@ -63,9 +63,13 @@ public class MatchSyncService {
                 FootballClubEntity home = upsertClub(m.getHomeTeam());
                 FootballClubEntity away = upsertClub(m.getAwayTeam());
 
+                // pokusaj fixanja resetiranja broja utakmica
+
                 MatchEntity match = matchRepo
                         .findBySourceAndSourceMatchId(SOURCE, String.valueOf(m.getId()))
                         .orElseGet(MatchEntity::new);
+
+                boolean isNewMatch = (match.getMatchUid() == null);
 
                 match.setSource(SOURCE);
                 match.setSourceMatchId(String.valueOf(m.getId()));
@@ -78,16 +82,20 @@ public class MatchSyncService {
                 match.setHomeTeam(home);
                 match.setAwayTeam(away);
 
-                StadiumEntity stadium = getOrCreateDefaultStadiumForCompetition(
-                        match.getCompetitionCode() != null ? match.getCompetitionCode() : competition
-                );
+                if (isNewMatch) {
+                    StadiumEntity stadium = getOrCreateDefaultStadiumForCompetition(
+                            match.getCompetitionCode() != null ? match.getCompetitionCode() : competition
+                    );
+                    match.setStadium(stadium);
 
-                match.setStadium(stadium);
-
-
-                if (match.getBaseTicketPriceUsd() == null) {
-                    match.setBaseTicketPriceUsd(DEFAULT_PRICE);
+                    if (match.getBaseTicketPriceUsd() == null) {
+                        match.setBaseTicketPriceUsd(DEFAULT_PRICE);
+                    }
                 }
+
+
+
+
 
                 matchRepo.save(match);
                 upserted++;
