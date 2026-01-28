@@ -18,6 +18,7 @@ public class TicketEntity {
     public static final String STATUS_RESERVED = "RESERVED";
     public static final String STATUS_PAID = "PAID";
     public static final String STATUS_CANCELLED = "CANCELLED";
+    public static final String STATUS_REFUNDED = "REFUNDED";
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -5,6 +5,7 @@ import com.football.ticketsale.entity.InvoiceEntity;
 import com.football.ticketsale.entity.TicketEntity;
 import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.repository.*;
+import com.football.ticketsale.service.AdminTicketService;
 import com.football.ticketsale.service.MatchService;
 import com.football.ticketsale.service.MatchSyncService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,8 @@ public class AdminDashboardController {
     private final MatchSyncService matchSyncService;
     private final MatchService matchService;
     private final TicketRepository ticketRepository;
+    private final AdminTicketService adminTicketService;
+
 
     // wip dio
     private final InvoiceRepository invoiceRepository;
@@ -38,7 +41,10 @@ public class AdminDashboardController {
             FootballClubRepository clubRepository,
             StadiumRepository stadiumRepository,
             MatchSyncService matchSyncService,
-            MatchService matchService, TicketRepository ticketRepository, InvoiceRepository invoiceRepository
+            MatchService matchService,
+            TicketRepository ticketRepository,
+            InvoiceRepository invoiceRepository,
+            AdminTicketService adminTicketService
     ) {
         this.matchRepository = matchRepository;
         this.userRepository = userRepository;
@@ -48,6 +54,7 @@ public class AdminDashboardController {
         this.matchService = matchService;
         this.ticketRepository = ticketRepository;
         this.invoiceRepository = invoiceRepository;
+        this.adminTicketService = adminTicketService;
     }
 
     @GetMapping("/dashboard")
@@ -81,13 +88,15 @@ public class AdminDashboardController {
         TicketEntity ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new IllegalArgumentException("krivi id"));
         UUID userId = ticket.getUserEntity().getUserUid();
-        InvoiceEntity invoice=  ticket.getInvoiceEntity();
-        if (invoice != null) {
-            invoiceRepository.delete(invoice);
+
+        try {
+            adminTicketService.refundOrCancelTicket(ticketId);
+            return "redirect:/admin/users/" + userId + "/tickets-view?success";
+        } catch (RuntimeException ex) {
+            return "redirect:/admin/users/" + userId + "/tickets-view?error=" + ex.getMessage();
         }
-        ticketRepository.delete(ticket);
-        return "redirect:/admin/users/" + userId + "/tickets-view?success";
     }
+
 
     @GetMapping("/invoices")
     public String viewAllInvoices(Model model) {
