@@ -14,6 +14,7 @@ User:
 - Filtering games by date and time, club, by base ticket price
 - Viewing tickets
 - Purchasing tickets with extra, optional services (picking a seat segment)
+- Discounts for children, students and the elderly
 - A system meant to prevent two or more individuals from purchasing a ticket with the same seat and ensuring the number of tickets sold does not exceed the number of total available seats.
 - The ability to refund purchases up to 72 hours before a game (only 50% refund)
 - A reservation system
