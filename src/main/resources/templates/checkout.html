@@ -21,36 +21,36 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <h2>KupiKartu</h2>
+            <h2>MAVEN</h2>
         </div>
 
         <ul class="menu-items">
             <li>
                 <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
-                    Otkrij
+                    Discover
                 </a>
             </li>
             <li>
                 <a th:href="@{/my-tickets}">
                     <ion-icon name="ticket-outline"></ion-icon>
-                    Moje ulaznice
+                    My Tickets
                 </a>
             </li>
             <li class="settings-item">
                 <a href="#" class="settings-link">
                     <ion-icon name="settings-outline"></ion-icon>
-                    Postavke
+                    Settings
                     <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
                 </a>
                 <div class="dropdown-menu">
                     <a th:href="@{/settings}">
                         <ion-icon name="person-circle-outline"></ion-icon>
-                        Postavke računa
+                        Account Settings
                     </a>
                     <a th:href="@{/logout}" class="sign-out">
                         <ion-icon name="log-out-outline"></ion-icon>
-                        Odjavi se
+                        Log Out
                     </a>
                 </div>
             </li>
@@ -60,7 +60,7 @@
             <div class="avatar"></div>
             <div class="user-info">
                 <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
-                <span class="role">Korisnik</span>
+                <span class="role">User</span>
             </div>
         </div>
     </nav>

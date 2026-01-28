@@ -15,38 +15,38 @@
 
     <nav class="sidebar">
         <div class="logo">
-            <h2>KupiKartu</h2>
+            <h2>MAVEN</h2>
         </div>
 
         <ul class="menu-items">
             <li>
                 <a th:href="@{/home}">
                     <ion-icon name="compass-outline"></ion-icon>
-                    Otkrij
+                    Discover
                 </a>
             </li>
             <li>
                 <a th:href="@{/my-tickets
 }">
                     <ion-icon name="ticket-outline"></ion-icon>
-                    Moje ulaznice
+                    My Tickets
                 </a>
             </li>
 
             <li class="settings-item">
                 <a href="#" class="settings-link active">
                     <ion-icon name="settings-outline"></ion-icon>
-                    Postavke
+                    Settings
                     <ion-icon name="chevron-down-outline" class="arrow-icon"></ion-icon>
                 </a>
 
                 <div class="dropdown-menu">
                     <a href="#">
                         <ion-icon name="person-circle-outline"></ion-icon>
-                        Postavke računa
+                        Account Settings
                     </a>
                     <a th:href="@{/logout}" class="sign-out"> <ion-icon name="log-out-outline"></ion-icon>
-                        Odjavi se
+                        Log Out
                     </a>
                 </div>
             </li>
@@ -62,28 +62,28 @@
 
     <main class="main-content">
         <header>
-            <h1>Postavke računa</h1>
+            <h1>Account Settings</h1>
         </header>
 
         <div class="settings-container">
             <div class="settings-card">
                 <div class="card-header">
                     <ion-icon name="person-circle-outline"></ion-icon>
-                    <h3>Uredi profil</h3>
+                    <h3>Edit Profile</h3>
                 </div>
                 <form class="settings-form" th:action="@{/settings/update}" th:object="${userProfileDto}" method="post">
                     <div class="input-group">
-                        <label>Ime i prezime</label>
+                        <label>Full Name</label>
                         <input type="text" th:field="*{fullName}" placeholder="Enter full name">
                     </div>
 
                     <div class="input-group">
-                        <label>Nova lozinka</label>
-                        <input type="password" th:field="*{newPassword}" placeholder="Unesite novu lozinka">
+                        <label>New Password</label>
+                        <input type="password" th:field="*{newPassword}" placeholder="Enter new password">
                     </div>
                     <div class="input-group">
-                        <label>Ponovite lozinku</label>
-                        <input type="password" th:field="*{confirmPassword}" placeholder="Ponovite lozinku">
+                        <label>Repeat Password</label>
+                        <input type="password" th:field="*{confirmPassword}" placeholder="Repeat password">
                     </div>
 
                     <div class="input-group">
@@ -91,11 +91,11 @@
                         <input type="email" th:field="*{email}" placeholder="Enter email">
                     </div>
 
-                    <button type="submit" class="save-btn">Sačuvaj promjene</button>
+                    <button type="submit" class="save-btn">Save changes</button>
 
                     <button type="button" class="delete-account-btn">
                         <ion-icon name="trash-outline"></ion-icon>
-                        Izbriši profil
+                        Delete Profile
                     </button>
                 </form>
             </div>

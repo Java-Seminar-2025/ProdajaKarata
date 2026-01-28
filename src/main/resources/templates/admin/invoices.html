@@ -14,15 +14,15 @@
     <div class="header-row">
         <a th:href="@{/admin/dashboard}" class="back-link">
             <ion-icon name="arrow-back-outline"></ion-icon>
-            Povratak
+            Go Back
         </a>
     </div>
 
     <div class="title-section">
-        <h2>Pregled svih <span>računa</span></h2>
+        <h2>Account <span>review</span></h2>
     </div>
     <div class="stat-info" style="display: flex; align-items: center; gap: 10px;">
-        <h3 style="color: white; margin: 0; font-size: 1.2rem; font-weight: 500;">Ukupna zarada:</h3>
+        <h3 style="color: white; margin: 0; font-size: 1.2rem; font-weight: 500;">Total revenue:</h3>
         <b style="color: #4CAF50; font-size: 1.2rem; font-weight: 600;"
            th:text="${totalRevenue != null ? totalRevenue : '0.00'}">
         </b>
@@ -32,9 +32,9 @@
         <table class="user-table">
             <thead>
             <tr>
-                <th>ID Računa</th>
-                <th>Korisnik</th>
-                <th>Iznos</th>
+                <th>Account ID</th>
+                <th>User</th>
+                <th>Amount</th>
                 <th>Status</th>
                 <th>PayPal ID</th>
             </tr>
@@ -59,7 +59,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(invoices)}">
-                <td colspan="5" class="empty-state">Trenutno nema izdanih računa u sustavu.</td>
+                <td colspan="5" class="empty-state">There are currently no invoices.</td>
             </tr>
             </tbody>
         </table>
