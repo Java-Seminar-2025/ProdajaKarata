@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Service
 public class CheckoutService {
@@ -25,6 +27,7 @@ public class CheckoutService {
     private final TicketRepository ticketRepository;
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
+    private final TicketTierRepository ticketTierRepository;
 
     public CheckoutService(
             MatchRepository matchRepository,
@@ -32,7 +35,8 @@ public class CheckoutService {
             SeatReservationRepository seatReservationRepository,
             TicketRepository ticketRepository,
             InvoiceRepository invoiceRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            TicketTierRepository ticketTierRepository
     ) {
         this.matchRepository = matchRepository;
         this.sectionRepository = sectionRepository;
@@ -40,6 +44,7 @@ public class CheckoutService {
         this.ticketRepository = ticketRepository;
         this.invoiceRepository = invoiceRepository;
         this.userRepository = userRepository;
+        this.ticketTierRepository = ticketTierRepository;
     }
 
     @Transactional(readOnly = true)
@@ -90,6 +95,11 @@ public class CheckoutService {
             throw new IllegalArgumentException("PIN must be exactly 11 digits");
         }
 
+        // IMPORTANT: ensure tier actually exists and is chosen
+        if (req.getTierUid() == null) {
+            throw new IllegalArgumentException("Ticket tier is required");
+        }
+
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -104,6 +114,7 @@ public class CheckoutService {
         MatchEntity match = matchRepository.findById(req.getMatchId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
+        // Only one active reservation per match per user: resume instead of duplicating
         List<TicketEntity> existingForMatch = ticketRepository.findReservedTicketsForUserAndMatch(
                 user.getUserUid(),
                 req.getMatchId(),
@@ -122,6 +133,9 @@ public class CheckoutService {
                 .findByStadiumAndSectionCode(match.getStadium(), req.getSectionCode())
                 .orElseThrow(() -> new EntityNotFoundException("Section not found for this stadium"));
 
+        TicketTierEntity tier = ticketTierRepository.findById(req.getTierUid())
+                .orElseThrow(() -> new EntityNotFoundException("Ticket tier not found"));
+
         int start = section.getSeatStart();
         int end = section.getSeatEnd();
 
@@ -139,10 +153,16 @@ public class CheckoutService {
             throw new IllegalStateException("Not enough seats available in this section");
         }
 
-        List<ReservedTicketDto> reservedTickets = new ArrayList<>();
-        BigDecimal price = match.getBaseTicketPriceUsd();
-        BigDecimal total = price.multiply(BigDecimal.valueOf(req.getQuantity()));
+        BigDecimal base = match.getBaseTicketPriceUsd();
+        BigDecimal modifier = BigDecimal.valueOf(
+                tier.getPriceModifier() != null ? tier.getPriceModifier() : 1.0
+        );
+        BigDecimal pricePerTicket = base.multiply(modifier).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = pricePerTicket.multiply(BigDecimal.valueOf(req.getQuantity())).setScale(2, RoundingMode.HALF_UP);
+
         LocalDateTime reservedUntil = LocalDateTime.now().plusMinutes(10);
+
+        List<ReservedTicketDto> reservedTickets = new ArrayList<>();
 
         try {
             for (Integer seatNumber : selected) {
@@ -156,6 +176,8 @@ public class CheckoutService {
                 t.setOwnerName(req.getOwnerName());
                 t.setPin(req.getPin());
                 t.setSectionCode(section.getSectionCode());
+                t.setTierEntity(tier);
+
                 t.setStatus(STATUS_RESERVED);
                 t.setReservedUntil(reservedUntil);
 
@@ -167,9 +189,7 @@ public class CheckoutService {
                 sr.setTicket(t);
                 seatReservationRepository.save(sr);
 
-                reservedTickets.add(
-                        new ReservedTicketDto(t.getTicketUid(), seatNumber, section.getSectionCode())
-                );
+                reservedTickets.add(new ReservedTicketDto(t.getTicketUid(), seatNumber, section.getSectionCode()));
             }
         } catch (DataIntegrityViolationException ex) {
             throw new IllegalStateException("Some seats were just taken. Please try again.");
@@ -212,7 +232,6 @@ public class CheckoutService {
             if (t.getInvoiceEntity() != null) {
                 throw new IllegalStateException("Ticket already paid");
             }
-
             if (t.getReservedUntil() == null || t.getReservedUntil().isBefore(now)) {
                 expired.add(t);
             }
@@ -227,12 +246,24 @@ public class CheckoutService {
             throw new IllegalStateException("Reservation expired. Please reserve again.");
         }
 
+
         BigDecimal total = BigDecimal.ZERO;
+
         for (TicketEntity t : tickets) {
             SeatReservationEntity sr = seatReservationRepository.findByTicket(t)
                     .orElseThrow(() -> new IllegalStateException("Ticket has no seat reservation"));
-            total = total.add(sr.getMatch().getBaseTicketPriceUsd());
+
+            BigDecimal base = sr.getMatch().getBaseTicketPriceUsd();
+            double mod = 1.0;
+            if (t.getTierEntity() != null && t.getTierEntity().getPriceModifier() != null) {
+                mod = t.getTierEntity().getPriceModifier();
+            }
+
+            BigDecimal price = base.multiply(BigDecimal.valueOf(mod)).setScale(2, RoundingMode.HALF_UP);
+            total = total.add(price);
         }
+
+        total = total.setScale(2, RoundingMode.HALF_UP);
 
         InvoiceEntity invoice = new InvoiceEntity();
         invoice.setUser(user);
@@ -366,8 +397,18 @@ public class CheckoutService {
                 .findFirst()
                 .orElse(null);
 
-        BigDecimal pricePerTicket = match.getBaseTicketPriceUsd();
-        BigDecimal total = pricePerTicket.multiply(BigDecimal.valueOf(reservedTickets.size()));
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (TicketEntity t : reservedTickets) {
+            BigDecimal base = match.getBaseTicketPriceUsd();
+            double mod = (t.getTierEntity() != null && t.getTierEntity().getPriceModifier() != null)
+                    ? t.getTierEntity().getPriceModifier()
+                    : 1.0;
+            total = total.add(base.multiply(BigDecimal.valueOf(mod)));
+        }
+
+        total = total.setScale(2, RoundingMode.HALF_UP);
+
 
         List<ReservedTicketDto> dtos = new ArrayList<>(reservedTickets.size());
 

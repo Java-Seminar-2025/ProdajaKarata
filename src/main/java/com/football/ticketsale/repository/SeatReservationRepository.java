@@ -102,4 +102,5 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
                            @Param("start") Integer start,
                            @Param("end") Integer end,
                            @Param("now") LocalDateTime now);
+
 }

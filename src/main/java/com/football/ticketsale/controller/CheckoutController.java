@@ -5,8 +5,10 @@ import com.football.ticketsale.dto.checkout.ReserveSectionRequestDto;
 import com.football.ticketsale.dto.checkout.ReserveSectionResponseDto;
 import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumSectionEntity;
+import com.football.ticketsale.entity.TicketTierEntity;
 import com.football.ticketsale.entity.UserEntity;
 import com.football.ticketsale.repository.MatchRepository;
+import com.football.ticketsale.repository.TicketTierRepository;
 import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.service.CheckoutService;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,11 +28,19 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
     private final MatchRepository matchRepository;
     private final UserRepository userRepository;
+    private final TicketTierRepository ticketTierRepository;
 
-    public CheckoutController(CheckoutService checkoutService, MatchRepository matchRepository, UserRepository userRepository) {
+
+    public CheckoutController(
+            CheckoutService checkoutService,
+            MatchRepository matchRepository,
+            UserRepository userRepository,
+            TicketTierRepository ticketTierRepository
+    ) {
         this.checkoutService = checkoutService;
         this.matchRepository = matchRepository;
         this.userRepository = userRepository;
+        this.ticketTierRepository = ticketTierRepository;
     }
 
     @GetMapping("/checkout/{matchId}")
@@ -46,7 +56,7 @@ public class CheckoutController {
 
         model.addAttribute("user", user);
         model.addAttribute("match", match);
-
+        model.addAttribute("tiers", ticketTierRepository.findAll());
 
         ReserveSectionResponseDto resumed = checkoutService.buildResumeModel(user.getUsername(), matchId);
         if (resumed != null) {
@@ -54,7 +64,6 @@ public class CheckoutController {
             model.addAttribute("payRequest", new PayRequestDto());
             return "checkout";
         }
-
 
         List<StadiumSectionEntity> sections = checkoutService.getSectionsForMatch(matchId);
         Map<UUID, Long> availability = checkoutService.getAvailabilityBySection(matchId);
@@ -66,9 +75,11 @@ public class CheckoutController {
                         Collectors.toList()
                 ));
 
-        model.addAttribute("match", match);
         model.addAttribute("sectionsByStand", sectionsByStand);
         model.addAttribute("availability", availability);
+
+        List<TicketTierEntity> tiers = ticketTierRepository.findAll();
+        model.addAttribute("tiers", tiers);
 
         ReserveSectionRequestDto rr = new ReserveSectionRequestDto();
         rr.setMatchId(matchId);
@@ -78,7 +89,6 @@ public class CheckoutController {
 
         return "checkout";
     }
-
 
     @PostMapping("/checkout/reserve")
     public String reserve(
@@ -111,5 +121,4 @@ public class CheckoutController {
         checkoutService.cancelReservedForMatch(userDetails.getUsername(), matchId);
         return "redirect:/home";
     }
-
 }

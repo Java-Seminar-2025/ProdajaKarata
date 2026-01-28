@@ -102,6 +102,17 @@
                         <input type="number" name="quantity" min="1" max="6" value="1" required/>
                     </div>
 
+                    <div class="input-group" th:if="${tiers != null and !#lists.isEmpty(tiers)}">
+                        <label>Ticket tier</label>
+                        <select th:field="*{tierUid}" class="styled-select" required>
+                            <option value="" disabled selected>Select tier</option>
+                            <option th:each="t : ${tiers}"
+                                    th:value="${t.tierUid}"
+                                    th:text="${t.tierName}">
+                            </option>
+                        </select>
+                    </div>
+
                     <div class="stadium-selection-area">
                         <label style="display:block; margin-bottom:15px; color:#888; text-align:center;">
                             Tap a section on the stadium
@@ -140,7 +151,6 @@
                         </div>
                     </div>
 
-                    <!-- Hidden radios that actually submit sectionCode -->
                     <div class="sections-list-hidden">
                         <div th:each="entry : ${sectionsByStand}">
                             <div th:each="sec : ${entry.value}">

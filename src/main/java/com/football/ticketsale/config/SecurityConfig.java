@@ -41,10 +41,10 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/matches/**").permitAll()
 
-                        .requestMatchers("/checkout/**", "/my-tickets")
+                        .requestMatchers("/checkout/**", "/my-tickets", "/api/geo/**")
                         .hasAnyRole("USER", "ADMIN")
 
-                        .requestMatchers("/admin/**", "/api/admin/**", "/api/geo/**")
+                        .requestMatchers("/admin/**", "/api/admin/**")
                         .hasRole("ADMIN")
 
                         .anyRequest().authenticated()

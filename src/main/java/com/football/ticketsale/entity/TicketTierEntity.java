@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.rmi.server.UID;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ticket_tier")
@@ -13,9 +13,10 @@ import java.rmi.server.UID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketTierEntity {
+
     @Id
     @Column(name = "tier_uid", columnDefinition = "BINARY(16)")
-    private UID id;
+    private UUID tierUid;
 
     @Column(name = "tier_name", unique = true, nullable = false)
     private String tierName;

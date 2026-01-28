@@ -11,4 +11,6 @@ public class ReserveSectionRequestDto {
     private Integer quantity;
     private String ownerName;
     private String pin;
+
+    private UUID tierUid;
 }
