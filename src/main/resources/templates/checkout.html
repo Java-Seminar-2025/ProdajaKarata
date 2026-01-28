@@ -60,7 +60,7 @@
             <div class="avatar"></div>
             <div class="user-info">
                 <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
-                <span class="role">User</span>
+                <span class="role" th:text="${#strings.capitalize(user.authorizationLevel)}"></span>
             </div>
         </div>
     </nav>
