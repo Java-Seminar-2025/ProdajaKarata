@@ -9,6 +9,7 @@ services:
       MYSQL_PASSWORD: apppassword
       MYSQL_ROOT_PASSWORD: "ironmaiden"
       MYSQL_DATABASE: "football_ticket_sale_db"
+      TZ: "Europe/Zagreb"
     ports:
       - "3306:3306"
     volumes:
@@ -37,6 +38,8 @@ services:
       SPRING_FLYWAY_ENABLED: "true"
       SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
       SPRING_PROFILES_ACTIVE: dev
+      TZ: "Europe/Zagreb"
+      JAVA_OPTS: "-Duser.timezone=Europe/Zagreb"
     depends_on:
       mysql:
         condition: service_healthy
