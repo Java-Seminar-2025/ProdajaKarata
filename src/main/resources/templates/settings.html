@@ -92,12 +92,18 @@
                     </div>
 
                     <button type="submit" class="save-btn">Save changes</button>
+                </form>
+                <form th:action="@{/settings/delete}" method="post">
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
 
-                    <button type="button" class="delete-account-btn">
+                    <button type="submit" class="delete-account-btn">
                         <ion-icon name="trash-outline"></ion-icon>
                         Delete Profile
                     </button>
                 </form>
+
             </div>
             </div>
     </main>

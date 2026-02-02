@@ -45,7 +45,7 @@ public class ProfileController {
                                 RedirectAttributes redirectAttributes) {
         try {
             userService.updateUser(principal.getName(), dto);
-            redirectAttributes.addFlashAttribute("successMessage", "Profil uspješno ažuriran!");
+            redirectAttributes.addFlashAttribute("successMessage", "Profile successfully updated!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
