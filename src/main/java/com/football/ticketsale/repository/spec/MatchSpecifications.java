@@ -11,6 +11,9 @@ import java.time.LocalTime;
 import java.util.Locale;
 
 public class MatchSpecifications {
+    public static Specification<MatchEntity> filterMatches(MatchFilterDto f) {
+        return byFilter(f);
+    }
 
     public static Specification<MatchEntity> byFilter(MatchFilterDto f) {
         return (root, query, cb) -> {

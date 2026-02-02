@@ -1,8 +1,8 @@
 package com.football.ticketsale.service;
 
+import com.football.ticketsale.domain.service.*;
 import com.football.ticketsale.dto.checkout.*;
 import com.football.ticketsale.entity.*;
-import com.football.ticketsale.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 @Service
 public class CheckoutService {
 
@@ -21,63 +20,134 @@ public class CheckoutService {
     public static final String STATUS_PAID = "PAID";
     public static final String STATUS_REFUNDED = "REFUNDED";
 
-    private final MatchRepository matchRepository;
-    private final StadiumSectionRepository sectionRepository;
-    private final SeatReservationRepository seatReservationRepository;
-    private final TicketRepository ticketRepository;
-    private final InvoiceRepository invoiceRepository;
-    private final UserRepository userRepository;
-    private final TicketTierRepository ticketTierRepository;
+    private final MatchDomainService matchDomainService;
+    private final StadiumSectionDomainService stadiumSectionDomainService;
+    private final SeatReservationDomainService seatReservationDomainService;
+    private final TicketDomainService ticketDomainService;
+    private final InvoiceDomainService invoiceDomainService;
+    private final UserDomainService userDomainService;
+    private final TicketTierDomainService ticketTierDomainService;
 
     public CheckoutService(
-            MatchRepository matchRepository,
-            StadiumSectionRepository sectionRepository,
-            SeatReservationRepository seatReservationRepository,
-            TicketRepository ticketRepository,
-            InvoiceRepository invoiceRepository,
-            UserRepository userRepository,
-            TicketTierRepository ticketTierRepository
+            MatchDomainService matchDomainService,
+            StadiumSectionDomainService stadiumSectionDomainService,
+            SeatReservationDomainService seatReservationDomainService,
+            TicketDomainService ticketDomainService,
+            InvoiceDomainService invoiceDomainService,
+            UserDomainService userDomainService,
+            TicketTierDomainService ticketTierDomainService
     ) {
-        this.matchRepository = matchRepository;
-        this.sectionRepository = sectionRepository;
-        this.seatReservationRepository = seatReservationRepository;
-        this.ticketRepository = ticketRepository;
-        this.invoiceRepository = invoiceRepository;
-        this.userRepository = userRepository;
-        this.ticketTierRepository = ticketTierRepository;
+        this.matchDomainService = matchDomainService;
+        this.stadiumSectionDomainService = stadiumSectionDomainService;
+        this.seatReservationDomainService = seatReservationDomainService;
+        this.ticketDomainService = ticketDomainService;
+        this.invoiceDomainService = invoiceDomainService;
+        this.userDomainService = userDomainService;
+        this.ticketTierDomainService = ticketTierDomainService;
+    }
+
+    @Transactional(readOnly = true)
+    public CheckoutPageDto buildCheckoutPage(String username, UUID matchId) {
+        UserEntity user = userDomainService.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        MatchEntity match = matchDomainService.findById(matchId)
+                .orElseThrow(() -> new EntityNotFoundException("Match not found"));
+
+        ReserveSectionResponseDto resumed = buildResumeModel(username, matchId);
+
+        ReserveSectionRequestDto reserveReq = new ReserveSectionRequestDto();
+        reserveReq.setMatchId(matchId);
+
+        PayRequestDto payReq = new PayRequestDto();
+
+        Map<String, List<StadiumSectionEntity>> sectionsByStand = null;
+        Map<UUID, Long> availability = null;
+
+        if (resumed == null) {
+            List<StadiumSectionEntity> sections = getSectionsForMatch(matchId);
+            availability = getAvailabilityBySection(matchId);
+
+            sectionsByStand = sections.stream()
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            s -> s.getStandName() == null ? "Sections" : s.getStandName(),
+                            LinkedHashMap::new,
+                            java.util.stream.Collectors.toList()
+                    ));
+        }
+
+        List<TicketTierEntity> tiers = ticketTierDomainService.findAll();
+
+        return new CheckoutPageDto(
+                user,
+                match,
+                resumed,
+                reserveReq,
+                payReq,
+                tiers,
+                sectionsByStand,
+                availability
+        );
     }
 
     @Transactional(readOnly = true)
     public List<StadiumSectionEntity> getSectionsForMatch(UUID matchId) {
-        MatchEntity match = matchRepository.findById(matchId)
+        MatchEntity match = matchDomainService.findById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
+
         StadiumEntity stadium = match.getStadium();
         if (stadium == null) return List.of();
-        return sectionRepository.findByStadiumOrderByStandNameAscSectionCodeAsc(stadium);
+
+        return stadiumSectionDomainService.findByStadiumOrdered(stadium);
     }
 
     @Transactional(readOnly = true)
     public Map<UUID, Long> getAvailabilityBySection(UUID matchId) {
-        MatchEntity match = matchRepository.findById(matchId)
+        MatchEntity match = matchDomainService.findById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
+
         StadiumEntity stadium = match.getStadium();
         if (stadium == null) return Map.of();
 
         LocalDateTime now = LocalDateTime.now();
 
-        List<StadiumSectionEntity> sections = sectionRepository.findByStadiumOrderByStandNameAscSectionCodeAsc(stadium);
+        List<StadiumSectionEntity> sections = stadiumSectionDomainService.findByStadiumOrdered(stadium);
         Map<UUID, Long> avail = new HashMap<>();
 
         for (StadiumSectionEntity s : sections) {
             int start = s.getSeatStart();
             int end = s.getSeatEnd();
 
-            long taken = seatReservationRepository.countTakenInRange(match, start, end, now);
-
+            long taken = seatReservationDomainService.countTakenInRange(match, start, end, now);
             long total = (long) end - start + 1;
+
             avail.put(s.getSectionUid(), Math.max(0, total - taken));
         }
         return avail;
+    }
+
+    @Transactional(readOnly = true)
+    public void resumeReservation(String username, UUID matchId, String sectionCodeIgnored, LocalDateTime reservedUntilIgnored) {
+        UserEntity user = userDomainService.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Active reservation: status RESERVED, no invoice, and reservedUntil > now
+        LocalDateTime now = LocalDateTime.now();
+        List<TicketEntity> active = ticketDomainService.findReservedTicketsForUserAndMatch(
+                user.getUserUid(),
+                matchId,
+                STATUS_RESERVED,
+                now
+        );
+
+        if (active.isEmpty()) {
+            throw new IllegalStateException("No active reservation to resume");
+        }
+    }
+
+    private void deleteSeatReservationAndDetach(TicketEntity ticket) {
+        seatReservationDomainService.deleteByTicket(ticket);
+        ticket.setSeatReservation(null);
     }
 
     @Transactional
@@ -94,28 +164,25 @@ public class CheckoutService {
         if (req.getPin() == null || !req.getPin().matches("\\d{11}")) {
             throw new IllegalArgumentException("PIN must be exactly 11 digits");
         }
-
-        // IMPORTANT: ensure tier actually exists and is chosen
         if (req.getTierUid() == null) {
             throw new IllegalArgumentException("Ticket tier is required");
         }
 
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userDomainService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         LocalDateTime now = LocalDateTime.now();
-        long active = ticketRepository.countActiveReservations(user, now);
+        long active = ticketDomainService.countActiveReservations(user, now);
         int limit = 12;
 
         if (active + req.getQuantity() > limit) {
             throw new IllegalStateException("You already have active reservations. Please pay or cancel them first.");
         }
 
-        MatchEntity match = matchRepository.findById(req.getMatchId())
+        MatchEntity match = matchDomainService.findById(req.getMatchId())
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        // Only one active reservation per match per user: resume instead of duplicating
-        List<TicketEntity> existingForMatch = ticketRepository.findReservedTicketsForUserAndMatch(
+        List<TicketEntity> existingForMatch = ticketDomainService.findReservedTicketsForUserAndMatch(
                 user.getUserUid(),
                 req.getMatchId(),
                 STATUS_RESERVED,
@@ -129,17 +196,17 @@ public class CheckoutService {
             throw new IllegalStateException("Match has no stadium configured");
         }
 
-        StadiumSectionEntity section = sectionRepository
+        StadiumSectionEntity section = stadiumSectionDomainService
                 .findByStadiumAndSectionCode(match.getStadium(), req.getSectionCode())
                 .orElseThrow(() -> new EntityNotFoundException("Section not found for this stadium"));
 
-        TicketTierEntity tier = ticketTierRepository.findById(req.getTierUid())
+        TicketTierEntity tier = ticketTierDomainService.findById(req.getTierUid())
                 .orElseThrow(() -> new EntityNotFoundException("Ticket tier not found"));
 
         int start = section.getSeatStart();
         int end = section.getSeatEnd();
 
-        List<Integer> taken = seatReservationRepository.findTakenSeatNumbersInRange(match, start, end, now);
+        List<Integer> taken = seatReservationDomainService.findTakenSeatNumbersInRange(match, start, end, now);
         Set<Integer> takenSet = new HashSet<>(taken);
 
         List<Integer> selected = new ArrayList<>();
@@ -158,7 +225,9 @@ public class CheckoutService {
                 tier.getPriceModifier() != null ? tier.getPriceModifier() : 1.0
         );
         BigDecimal pricePerTicket = base.multiply(modifier).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal total = pricePerTicket.multiply(BigDecimal.valueOf(req.getQuantity())).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = pricePerTicket
+                .multiply(BigDecimal.valueOf(req.getQuantity()))
+                .setScale(2, RoundingMode.HALF_UP);
 
         LocalDateTime reservedUntil = LocalDateTime.now().plusMinutes(10);
 
@@ -167,7 +236,7 @@ public class CheckoutService {
         try {
             for (Integer seatNumber : selected) {
 
-                if (seatReservationRepository.existsByMatchAndSeatNumber(match, seatNumber)) {
+                if (seatReservationDomainService.existsActiveSeatReservation(match, seatNumber, now)) {
                     throw new IllegalStateException("Some seats were just taken. Please try again.");
                 }
 
@@ -177,17 +246,16 @@ public class CheckoutService {
                 t.setPin(req.getPin());
                 t.setSectionCode(section.getSectionCode());
                 t.setTierEntity(tier);
-
                 t.setStatus(STATUS_RESERVED);
                 t.setReservedUntil(reservedUntil);
 
-                t = ticketRepository.save(t);
+                t = ticketDomainService.save(t);
 
                 SeatReservationEntity sr = new SeatReservationEntity();
                 sr.setMatch(match);
                 sr.setSeatNumber(seatNumber);
                 sr.setTicket(t);
-                seatReservationRepository.save(sr);
+                seatReservationDomainService.save(sr);
 
                 reservedTickets.add(new ReservedTicketDto(t.getTicketUid(), seatNumber, section.getSectionCode()));
             }
@@ -211,10 +279,10 @@ public class CheckoutService {
             throw new IllegalArgumentException("No tickets to pay");
         }
 
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userDomainService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        List<TicketEntity> tickets = ticketRepository.findAllByIdForUpdate(req.getTicketIds());
+        List<TicketEntity> tickets = ticketDomainService.findAllByIdForUpdate(req.getTicketIds());
         if (tickets.size() != req.getTicketIds().size()) {
             throw new IllegalArgumentException("Some tickets not found");
         }
@@ -240,21 +308,21 @@ public class CheckoutService {
         if (!expired.isEmpty()) {
             for (TicketEntity t : expired) {
                 t.setStatus("EXPIRED");
-                ticketRepository.save(t);
-                seatReservationRepository.deleteByTicket(t);
+                detachAndDeleteSeatReservation(t);
+                ticketDomainService.save(t);
             }
             throw new IllegalStateException("Reservation expired. Please reserve again.");
         }
 
-
         BigDecimal total = BigDecimal.ZERO;
 
         for (TicketEntity t : tickets) {
-            SeatReservationEntity sr = seatReservationRepository.findByTicket(t)
+            SeatReservationEntity sr = seatReservationDomainService.findByTicket(t)
                     .orElseThrow(() -> new IllegalStateException("Ticket has no seat reservation"));
 
             BigDecimal base = sr.getMatch().getBaseTicketPriceUsd();
             double mod = 1.0;
+
             if (t.getTierEntity() != null && t.getTierEntity().getPriceModifier() != null) {
                 mod = t.getTierEntity().getPriceModifier();
             }
@@ -272,14 +340,14 @@ public class CheckoutService {
         invoice.setPurchaseQty(tickets.size());
         invoice.setPaymentStatus("PAID");
         invoice.setPaypalPaymentId("MOCK-" + UUID.randomUUID());
-        invoice = invoiceRepository.save(invoice);
+        invoice = invoiceDomainService.save(invoice);
 
         LocalDateTime paidAt = LocalDateTime.now();
         for (TicketEntity t : tickets) {
             t.setInvoiceEntity(invoice);
             t.setStatus(STATUS_PAID);
             t.setPaidAt(paidAt);
-            ticketRepository.save(t);
+            ticketDomainService.save(t);
         }
 
         return invoice.getInvoiceUid();
@@ -287,10 +355,10 @@ public class CheckoutService {
 
     @Transactional
     public void refundTicket(String username, UUID ticketId) {
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userDomainService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        TicketEntity t = ticketRepository.findAllByIdForUpdate(List.of(ticketId))
+        TicketEntity t = ticketDomainService.findAllByIdForUpdate(List.of(ticketId))
                 .stream().findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
 
@@ -301,7 +369,7 @@ public class CheckoutService {
             throw new IllegalStateException("Only paid tickets can be refunded");
         }
 
-        SeatReservationEntity sr = seatReservationRepository.findByTicket(t)
+        SeatReservationEntity sr = seatReservationDomainService.findByTicket(t)
                 .orElseThrow(() -> new IllegalStateException("Ticket has no seat reservation"));
 
         LocalDateTime matchTime = sr.getMatch().getMatchDatetime();
@@ -309,48 +377,54 @@ public class CheckoutService {
             throw new IllegalStateException("Refunds are not allowed within 3 days of the match");
         }
 
+        seatReservationDomainService.delete(sr);
+        t.setSeatReservation(null);
+
         t.setStatus(STATUS_REFUNDED);
         t.setRefundedAt(LocalDateTime.now());
-        ticketRepository.save(t);
-
-        seatReservationRepository.delete(sr);
+        ticketDomainService.save(t);
 
         InvoiceEntity inv = t.getInvoiceEntity();
-        List<TicketEntity> invoiceTickets = ticketRepository.findByInvoiceEntity(inv);
+        List<TicketEntity> invoiceTickets = ticketDomainService.findByInvoice(inv);
 
         boolean allRefunded = invoiceTickets.stream().allMatch(x -> STATUS_REFUNDED.equals(x.getStatus()));
         if (allRefunded) {
             inv.setPaymentStatus("REFUNDED");
-            invoiceRepository.save(inv);
+            invoiceDomainService.save(inv);
         }
     }
 
     @Transactional
     public void cancelReservedForMatch(String username, UUID matchId) {
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userDomainService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        List<TicketEntity> reserved = ticketRepository
-                .findByUserEntityAndStatusAndInvoiceEntityIsNullAndMatchId(user, STATUS_RESERVED, matchId);
+        LocalDateTime now = LocalDateTime.now();
+
+        List<TicketEntity> reserved = ticketDomainService.findByUserStatusNoInvoiceMatch(
+                user,
+                STATUS_RESERVED,
+                matchId,
+                now
+        );
 
         for (TicketEntity t : reserved) {
-            seatReservationRepository.deleteByTicket(t);
+            detachAndDeleteSeatReservation(t);
 
             t.setStatus(TicketEntity.STATUS_CANCELLED);
             t.setReservedUntil(null);
-            ticketRepository.save(t);
+            ticketDomainService.save(t);
         }
     }
 
-    @Transactional
-    public ReserveSectionResponseDto buildResumeModel(String username, UUID matchId) {
-        UserEntity user = userRepository.findByUsername(username)
+public ReserveSectionResponseDto buildResumeModel(String username, UUID matchId) {
+        UserEntity user = userDomainService.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        MatchEntity match = matchRepository.findById(matchId)
+        MatchEntity match = matchDomainService.findById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        List<TicketEntity> reservedTickets = ticketRepository.findReservedTicketsForUserAndMatch(
+        List<TicketEntity> reservedTickets = ticketDomainService.findReservedTicketsForUserAndMatch(
                 user.getUserUid(),
                 matchId,
                 STATUS_RESERVED,
@@ -375,10 +449,10 @@ public class CheckoutService {
                     .toList();
 
             for (TicketEntity t : cancel) {
-                seatReservationRepository.deleteByTicket(t);
+                detachAndDeleteSeatReservation(t);
                 t.setStatus(TicketEntity.STATUS_CANCELLED);
                 t.setReservedUntil(null);
-                ticketRepository.save(t);
+                ticketDomainService.save(t);
             }
 
             reservedTickets = keep;
@@ -398,22 +472,10 @@ public class CheckoutService {
                 .orElse(null);
 
         BigDecimal total = BigDecimal.ZERO;
-
-        for (TicketEntity t : reservedTickets) {
-            BigDecimal base = match.getBaseTicketPriceUsd();
-            double mod = (t.getTierEntity() != null && t.getTierEntity().getPriceModifier() != null)
-                    ? t.getTierEntity().getPriceModifier()
-                    : 1.0;
-            total = total.add(base.multiply(BigDecimal.valueOf(mod)));
-        }
-
-        total = total.setScale(2, RoundingMode.HALF_UP);
-
-
         List<ReservedTicketDto> dtos = new ArrayList<>(reservedTickets.size());
 
         for (TicketEntity t : reservedTickets) {
-            SeatReservationEntity sr = seatReservationRepository.findByTicket(t)
+            SeatReservationEntity sr = seatReservationDomainService.findByTicket(t)
                     .orElseThrow(() -> new IllegalStateException("Ticket has no seat reservation"));
 
             String dtoSection = (t.getSectionCode() != null && !t.getSectionCode().isBlank())
@@ -425,7 +487,16 @@ public class CheckoutService {
                     sr.getSeatNumber(),
                     dtoSection
             ));
+
+            BigDecimal base = match.getBaseTicketPriceUsd();
+            double mod = 1.0;
+            if (t.getTierEntity() != null && t.getTierEntity().getPriceModifier() != null) {
+                mod = t.getTierEntity().getPriceModifier();
+            }
+            total = total.add(base.multiply(BigDecimal.valueOf(mod)));
         }
+
+        total = total.setScale(2, RoundingMode.HALF_UP);
 
         if (sectionCode == null) {
             sectionCode = dtos.stream()
@@ -443,5 +514,11 @@ public class CheckoutService {
                 dtos,
                 reservedUntil
         );
+    }
+
+    private void detachAndDeleteSeatReservation(TicketEntity ticket) {
+        if (ticket == null) return;
+        seatReservationDomainService.deleteByTicket(ticket);
+        ticket.setSeatReservation(null);
     }
 }

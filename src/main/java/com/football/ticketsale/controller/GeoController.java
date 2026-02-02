@@ -1,9 +1,8 @@
 package com.football.ticketsale.controller;
 
-import com.football.ticketsale.entity.CityEntity;
-import com.football.ticketsale.entity.CountryEntity;
-import com.football.ticketsale.repository.CityRepository;
-import com.football.ticketsale.repository.CountryRepository;
+import com.football.ticketsale.dto.geo.CityDto;
+import com.football.ticketsale.dto.geo.CountryDto;
+import com.football.ticketsale.service.GeoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,21 +12,19 @@ import java.util.UUID;
 @RequestMapping("/api/geo")
 public class GeoController {
 
-    private final CityRepository cityRepo;
-    private final CountryRepository countryRepo;
+    private final GeoService geoService;
 
-    public GeoController(CityRepository cityRepo, CountryRepository countryRepo) {
-        this.cityRepo = cityRepo;
-        this.countryRepo = countryRepo;
+    public GeoController(GeoService geoService) {
+        this.geoService = geoService;
+    }
+
+    @GetMapping("/countries")
+    public List<CountryDto> countries() {
+        return geoService.getCountries();
     }
 
     @GetMapping("/cities")
-    public List<CityItem> cities(@RequestParam UUID countryId) {
-        CountryEntity c = countryRepo.findById(countryId).orElseThrow();
-        return cityRepo.findByCountry(c).stream()
-                .map(x -> new CityItem(x.getId(), x.getCityName()))
-                .toList();
+    public List<CityDto> cities(@RequestParam UUID countryId) {
+        return geoService.getCitiesByCountry(countryId);
     }
-
-    public record CityItem(UUID id, String name) {}
 }

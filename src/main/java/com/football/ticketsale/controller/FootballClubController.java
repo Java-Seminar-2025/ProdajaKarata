@@ -1,9 +1,7 @@
 package com.football.ticketsale.controller;
 
-import com.football.ticketsale.entity.FootballClubEntity;
-import com.football.ticketsale.repository.FootballClubRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.football.ticketsale.dto.api.FootballClubDto;
+import com.football.ticketsale.service.FootballClubService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,17 +10,19 @@ import java.util.List;
 @RequestMapping("/api/clubs")
 public class FootballClubController {
 
-    @Autowired
-    private FootballClubRepository footballClubRepository;
+    private final FootballClubService footballClubService;
+
+    public FootballClubController(FootballClubService footballClubService) {
+        this.footballClubService = footballClubService;
+    }
 
     @GetMapping
-    public List<FootballClubEntity> getAllClubs() {
-        return footballClubRepository.findAll();
+    public List<FootballClubDto> getAll() {
+        return footballClubService.getAllClubs();
     }
 
     @PostMapping
-    public ResponseEntity<FootballClubEntity> createClub(@RequestBody FootballClubEntity club) {
-        FootballClubEntity savedClub = footballClubRepository.save(club);
-        return ResponseEntity.ok(savedClub);
+    public FootballClubDto create(@RequestBody FootballClubDto dto) {
+        return footballClubService.createClub(dto);
     }
 }

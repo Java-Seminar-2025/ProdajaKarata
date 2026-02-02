@@ -1,11 +1,11 @@
 package com.football.ticketsale.service;
 
+import com.football.ticketsale.domain.service.InvoiceDomainService;
+import com.football.ticketsale.domain.service.SeatReservationDomainService;
+import com.football.ticketsale.domain.service.TicketDomainService;
 import com.football.ticketsale.entity.InvoiceEntity;
 import com.football.ticketsale.entity.SeatReservationEntity;
 import com.football.ticketsale.entity.TicketEntity;
-import com.football.ticketsale.repository.InvoiceRepository;
-import com.football.ticketsale.repository.SeatReservationRepository;
-import com.football.ticketsale.repository.TicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,44 +17,46 @@ import java.util.UUID;
 @Service
 public class AdminTicketService {
 
-    private final TicketRepository ticketRepository;
-    private final SeatReservationRepository seatReservationRepository;
-    private final InvoiceRepository invoiceRepository;
+    private final TicketDomainService ticketDomainService;
+    private final SeatReservationDomainService seatReservationDomainService;
+    private final InvoiceDomainService invoiceDomainService;
 
-    public AdminTicketService(TicketRepository ticketRepository,
-                              SeatReservationRepository seatReservationRepository,
-                              InvoiceRepository invoiceRepository) {
-        this.ticketRepository = ticketRepository;
-        this.seatReservationRepository = seatReservationRepository;
-        this.invoiceRepository = invoiceRepository;
+    public AdminTicketService(
+            TicketDomainService ticketDomainService,
+            SeatReservationDomainService seatReservationDomainService,
+            InvoiceDomainService invoiceDomainService
+    ) {
+        this.ticketDomainService = ticketDomainService;
+        this.seatReservationDomainService = seatReservationDomainService;
+        this.invoiceDomainService = invoiceDomainService;
     }
 
-
     @Transactional
-    public void refundOrCancelTicket(UUID ticketId) {
+    public void refundOrCancelTicket(UUID ticketUid) {
 
-        TicketEntity t = ticketRepository.findAllByIdForUpdate(List.of(ticketId))
-                .stream()
-                .findFirst()
+        TicketEntity t = ticketDomainService.findAllByIdForUpdate(List.of(ticketUid))
+                .stream().findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
 
         String status = t.getStatus();
 
-        SeatReservationEntity sr = seatReservationRepository.findByTicket(t).orElse(null);
+        SeatReservationEntity sr = seatReservationDomainService.findByTicket(t).orElse(null);
 
+        // Cancel reserved tickets (admin action)
         if (TicketEntity.STATUS_RESERVED.equals(status)) {
 
-            t.setSeatReservation(null);
+            if (sr != null) {
+                seatReservationDomainService.delete(sr);
+            }
 
             t.setStatus(TicketEntity.STATUS_CANCELLED);
             t.setReservedUntil(null);
-
-            ticketRepository.save(t);
+            ticketDomainService.save(t);
 
             return;
         }
 
-
+        // Refund paid tickets (within policy window)
         if (TicketEntity.STATUS_PAID.equals(status)) {
             if (sr == null) {
                 throw new IllegalStateException("Paid ticket has no seat reservation (cannot determine match time)");
@@ -71,19 +73,19 @@ public class AdminTicketService {
 
             t.setStatus(TicketEntity.STATUS_REFUNDED);
             t.setRefundedAt(LocalDateTime.now());
-            ticketRepository.save(t);
+            ticketDomainService.save(t);
 
-            seatReservationRepository.delete(sr);
+            seatReservationDomainService.delete(sr);
 
             InvoiceEntity inv = t.getInvoiceEntity();
             if (inv != null) {
-                List<TicketEntity> invoiceTickets = ticketRepository.findByInvoiceEntity(inv);
+                List<TicketEntity> invoiceTickets = ticketDomainService.findByInvoice(inv);
                 boolean allRefunded = invoiceTickets.stream()
                         .allMatch(x -> TicketEntity.STATUS_REFUNDED.equals(x.getStatus()));
 
                 if (allRefunded) {
                     inv.setPaymentStatus("REFUNDED");
-                    invoiceRepository.save(inv);
+                    invoiceDomainService.save(inv);
                 }
             }
 

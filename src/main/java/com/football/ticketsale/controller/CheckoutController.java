@@ -1,124 +1,79 @@
 package com.football.ticketsale.controller;
 
+import com.football.ticketsale.dto.checkout.CheckoutPageDto;
 import com.football.ticketsale.dto.checkout.PayRequestDto;
 import com.football.ticketsale.dto.checkout.ReserveSectionRequestDto;
-import com.football.ticketsale.dto.checkout.ReserveSectionResponseDto;
-import com.football.ticketsale.entity.MatchEntity;
-import com.football.ticketsale.entity.StadiumSectionEntity;
-import com.football.ticketsale.entity.TicketTierEntity;
-import com.football.ticketsale.entity.UserEntity;
-import com.football.ticketsale.repository.MatchRepository;
-import com.football.ticketsale.repository.TicketTierRepository;
-import com.football.ticketsale.repository.UserRepository;
 import com.football.ticketsale.service.CheckoutService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Controller
+@RequestMapping("/checkout")
 public class CheckoutController {
 
     private final CheckoutService checkoutService;
-    private final MatchRepository matchRepository;
-    private final UserRepository userRepository;
-    private final TicketTierRepository ticketTierRepository;
 
-
-    public CheckoutController(
-            CheckoutService checkoutService,
-            MatchRepository matchRepository,
-            UserRepository userRepository,
-            TicketTierRepository ticketTierRepository
-    ) {
+    public CheckoutController(CheckoutService checkoutService) {
         this.checkoutService = checkoutService;
-        this.matchRepository = matchRepository;
-        this.userRepository = userRepository;
-        this.ticketTierRepository = ticketTierRepository;
     }
 
-    @GetMapping("/checkout/{matchId}")
-    public String checkoutPage(@PathVariable UUID matchId,
-                               @AuthenticationPrincipal UserDetails userDetails,
-                               Model model) {
+    @GetMapping("/{matchId}")
+    public String checkoutPage(
+            @PathVariable UUID matchId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+        CheckoutPageDto dto = checkoutService.buildCheckoutPage(userDetails.getUsername(), matchId);
 
-        UserEntity user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        model.addAttribute("user", dto.user());
+        model.addAttribute("match", dto.match());
+        model.addAttribute("reserved", dto.reserved());
+        model.addAttribute("reserveRequest", dto.reserveRequest());
+        model.addAttribute("payRequest", dto.payRequest());
+        model.addAttribute("tiers", dto.tiers());
 
-        MatchEntity match = matchRepository.findById(matchId)
-                .orElseThrow(() -> new EntityNotFoundException("Match not found"));
-
-        model.addAttribute("user", user);
-        model.addAttribute("match", match);
-        model.addAttribute("tiers", ticketTierRepository.findAll());
-
-        ReserveSectionResponseDto resumed = checkoutService.buildResumeModel(user.getUsername(), matchId);
-        if (resumed != null) {
-            model.addAttribute("reserved", resumed);
-            model.addAttribute("payRequest", new PayRequestDto());
-            return "checkout";
+        if (dto.sectionsByStand() != null) {
+            model.addAttribute("sectionsByStand", dto.sectionsByStand());
         }
-
-        List<StadiumSectionEntity> sections = checkoutService.getSectionsForMatch(matchId);
-        Map<UUID, Long> availability = checkoutService.getAvailabilityBySection(matchId);
-
-        Map<String, List<StadiumSectionEntity>> sectionsByStand = sections.stream()
-                .collect(Collectors.groupingBy(
-                        s -> s.getStandName() == null ? "Sections" : s.getStandName(),
-                        LinkedHashMap::new,
-                        Collectors.toList()
-                ));
-
-        model.addAttribute("sectionsByStand", sectionsByStand);
-        model.addAttribute("availability", availability);
-
-        List<TicketTierEntity> tiers = ticketTierRepository.findAll();
-        model.addAttribute("tiers", tiers);
-
-        ReserveSectionRequestDto rr = new ReserveSectionRequestDto();
-        rr.setMatchId(matchId);
-        model.addAttribute("reserveRequest", rr);
-
-        model.addAttribute("payRequest", new PayRequestDto());
+        if (dto.availability() != null) {
+            model.addAttribute("availability", dto.availability());
+        }
 
         return "checkout";
     }
 
-    @PostMapping("/checkout/reserve")
+    @PostMapping("/reserve")
     public String reserve(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute("reserveRequest") ReserveSectionRequestDto req,
-            RedirectAttributes redirectAttributes
+            @ModelAttribute ReserveSectionRequestDto req
     ) {
-        ReserveSectionResponseDto resp = checkoutService.reserveSection(userDetails.getUsername(), req);
-
-        redirectAttributes.addFlashAttribute("reserved", resp);
-        return "redirect:/checkout/" + resp.getMatchId();
+        checkoutService.reserveSection(userDetails.getUsername(), req);
+        return "redirect:/checkout/" + req.getMatchId();
     }
 
-    @PostMapping("/checkout/pay")
+    
+    @PostMapping("/resume")
+    public String resume(@RequestParam UUID matchId) {
+        return "redirect:/checkout/" + matchId;
+    }
+
+@PostMapping("/pay")
     public String pay(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute("payRequest") PayRequestDto req,
-            RedirectAttributes redirectAttributes
+            @ModelAttribute PayRequestDto req
     ) {
-        UUID invoiceId = checkoutService.pay(userDetails.getUsername(), req);
-        redirectAttributes.addFlashAttribute("paidInvoiceId", invoiceId.toString());
-        return "redirect:/my-tickets";
+        checkoutService.pay(userDetails.getUsername(), req);
+        return "redirect:/my-tickets?success";
     }
 
-    @PostMapping("/checkout/cancel")
-    public String cancel(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam UUID matchId
-    ) {
+    @PostMapping("/cancel/{matchId}")
+    public String cancel(@AuthenticationPrincipal UserDetails userDetails, @PathVariable UUID matchId) {
         checkoutService.cancelReservedForMatch(userDetails.getUsername(), matchId);
-        return "redirect:/home";
+        return "redirect:/checkout/" + matchId + "?cancelled";
     }
 }

@@ -1,56 +1,101 @@
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\StadiumEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\TicketRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\CityEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\ProfileController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\SeatReservationId.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\UserRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\validation\RegistrationValidator.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\AuthController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\CheckoutService.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\UserEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\initializer\DevDatabaseSeeder.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\CheckoutController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\HomeController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\MatchEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataDtos.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\MatchDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\CustomUserDetailsService.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataClient.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\CityRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\InvoiceEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\MatchSyncService.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\InvoiceRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\MatchService.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\checkout\ReserveSectionResponseDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\UserRegistrationDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\MatchRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\checkout\PayRequestDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataProperties.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\UserService.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\TicketTierRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\AdminSyncController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\MatchController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\UserServiceImpl.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\FootballClubRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\StadiumRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\MyTicketsController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\CountryRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\config\StadiumSectionSeeder.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\config\AppConfig.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\SeatReservationRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\repository\StadiumSectionRepository.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\FootballClubController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\checkout\ReservedTicketDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\service\MatchSyncJob.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\CountryEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\FootballClubEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\SeatReservationEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\StadiumSectionEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\TicketEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\config\SecurityConfig.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\controller\StadiumController.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\MatchCompetitorId.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\FootballTicketSaleApplication.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\entity\TicketTierEntity.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\UserProfileDto.java
-C:\Users\leakl\Downloads\ProdajaKarataProjektrenamed\ProdajaKarataProjekt (2)\ProdajaKarataProjekt\src\main\java\com\football\ticketsale\dto\checkout\ReserveSectionRequestDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\security\CustomLoginSuccessHandler.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\MatchController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\UserServiceImpl.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\config\StadiumSectionSeeder.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\home\HomePageDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\view\ActiveReservationDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\CityEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\TicketRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\InvoiceRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\StadiumDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\FootballTicketSaleApplication.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\MatchSyncService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\admin\TicketDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\UserEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\UserDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\GlobalExceptionHandler.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\checkout\CheckoutPageDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\TicketDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\FootballClubEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\AdminDashboardController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\CheckoutController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\UserRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\jobs\ReservationCleanupJob.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\TicketTierEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\ProfileController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\HomeController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\mapper\TicketViewMapper.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\mapper\StadiumMapper.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\admin\CreateMatchForm.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\config\SecurityConfig.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\AuthController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\view\MyTicketsPageDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\geo\CityDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\initializer\DevDatabaseSeeder.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\view\TicketViewDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\checkout\ReserveSectionRequestDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\UserService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\SeatReservationDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\InvoiceDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\config\AppConfig.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\MyTicketsService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\checkout\PayRequestDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\AdminDashboardService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\StadiumRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\StadiumSectionRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\MatchRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\FootballClubService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\mapper\FootballClubMapper.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\MatchDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\validation\RegistrationValidator.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\StadiumController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataProperties.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\InvoiceEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\StadiumEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataClient.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\TicketTierRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\StadiumSectionEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\CustomUserDetailsService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\MatchService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\spec\MatchSpecifications.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\CountryDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\SeatReservationEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\HomePageService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\GeoController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\FootballClubRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\checkout\ReserveSectionResponseDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\CheckoutService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\SeatReservationRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\MyTicketsController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\api\StadiumDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\checkout\ReservedTicketDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\MatchSyncJob.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\MatchEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\admin\AdminUserTicketsDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\CountryRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\mapper\GeoMapper.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\GeoService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\MatchDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\api\FootballClubDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\FootballClubController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\CityDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\StadiumSectionDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\repository\CityRepository.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\MatchFilterDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\RefundController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\UserRegistrationDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\SeatReservationId.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\controller\AdminSyncController.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\UserProfileDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\MatchCompetitorId.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\FootballClubDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\admin\AdminInvoicesDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\geo\CountryDto.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\TicketEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\domain\service\TicketTierDomainService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\integration\footballdata\FootballDataDtos.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\AdminTicketService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\config\SchedulingConfig.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\entity\CountryEntity.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\service\StadiumService.java
+C:\Users\leakl\Documents\ProdajaKarataFinal_refactor\ProdajaKarataFinal_refactor\src\main\java\com\football\ticketsale\dto\admin\AdminDashboardDto.java

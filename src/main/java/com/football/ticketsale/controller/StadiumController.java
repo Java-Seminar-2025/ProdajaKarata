@@ -1,9 +1,7 @@
 package com.football.ticketsale.controller;
 
-import com.football.ticketsale.entity.StadiumEntity;
-import com.football.ticketsale.repository.StadiumRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.football.ticketsale.dto.api.StadiumDto;
+import com.football.ticketsale.service.StadiumService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,17 +10,19 @@ import java.util.List;
 @RequestMapping("/api/stadiums")
 public class StadiumController {
 
-    @Autowired
-    private StadiumRepository stadiumRepository;
+    private final StadiumService stadiumService;
+
+    public StadiumController(StadiumService stadiumService) {
+        this.stadiumService = stadiumService;
+    }
 
     @GetMapping
-    public List<StadiumEntity> getAllStadiums() {
-        return stadiumRepository.findAll();
+    public List<StadiumDto> listStadiums() {
+        return stadiumService.getAllStadiums();
     }
 
     @PostMapping
-    public ResponseEntity<StadiumEntity> createStadium(@RequestBody StadiumEntity stadium) {
-        StadiumEntity savedStadium = stadiumRepository.save(stadium);
-        return ResponseEntity.ok(savedStadium);
+    public StadiumDto createStadium(@RequestBody StadiumDto stadium) {
+        return stadiumService.createStadium(stadium);
     }
 }

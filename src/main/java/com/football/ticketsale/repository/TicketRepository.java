@@ -25,7 +25,8 @@ public interface TicketRepository extends JpaRepository<TicketEntity, UUID> {
     List<TicketEntity> findByTierEntity(TicketTierEntity tierEntity);
     List<TicketEntity> findByUserEntityAndStatus(UserEntity userEntity, String status);
     List<TicketEntity> findByStatusAndReservedUntilBefore(String status, LocalDateTime time);
-    List<TicketEntity> findByUserEntityAndStatusAndReservedUntilAfter(UserEntity user, String status, java.time.LocalDateTime now);
+    List<TicketEntity> findByUserEntityAndStatusAndReservedUntilAfter(UserEntity user, String status, LocalDateTime now);
+    List<TicketEntity> findByUserEntityAndStatusAndInvoiceEntityIsNullAndReservedUntilAfter(UserEntity user, String status, LocalDateTime now);
 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

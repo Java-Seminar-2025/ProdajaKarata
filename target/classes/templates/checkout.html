@@ -60,7 +60,7 @@
             <div class="avatar"></div>
             <div class="user-info">
                 <span class="username" th:text="${user != null ? user.username : 'Gost'}"></span>
-                <span class="role">User</span>
+                <span class="role" th:text="${#strings.capitalize(user.authorizationLevel)}"></span>
             </div>
         </div>
     </nav>
@@ -232,8 +232,9 @@
                     <button id="payBtn" type="submit" class="save-btn">Pay Now</button>
                 </form>
 
-                <form id="cancelForm" th:action="@{/checkout/cancel}" method="post" style="margin-top:12px;">
-                    <input type="hidden" name="matchId" th:value="${match.matchUid}">
+                <form id="cancelForm"
+                      th:action="@{/checkout/cancel/{matchId}(matchId=${match.matchUid})}"
+                      method="post" style="margin-top:12px;">
                     <button type="submit" class="btn-cancel-reservation">Cancel reservation</button>
                 </form>
 

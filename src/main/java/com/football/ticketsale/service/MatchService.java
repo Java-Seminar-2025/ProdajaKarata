@@ -1,114 +1,112 @@
 package com.football.ticketsale.service;
 
+import com.football.ticketsale.domain.service.FootballClubDomainService;
+import com.football.ticketsale.domain.service.MatchDomainService;
+import com.football.ticketsale.domain.service.StadiumDomainService;
+import com.football.ticketsale.dto.MatchFilterDto;
+import com.football.ticketsale.dto.admin.CreateMatchForm;
 import com.football.ticketsale.entity.FootballClubEntity;
 import com.football.ticketsale.entity.MatchEntity;
 import com.football.ticketsale.entity.StadiumEntity;
-import com.football.ticketsale.repository.FootballClubRepository;
-import com.football.ticketsale.repository.MatchRepository;
-import com.football.ticketsale.repository.StadiumRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.football.ticketsale.repository.spec.MatchSpecifications;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.stream.Collectors;
-import com.football.ticketsale.dto.MatchFilterDto;
-import com.football.ticketsale.repository.spec.MatchSpecifications;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-
 @Service
 public class MatchService {
 
-    @Autowired
-    private MatchRepository matchRepository;
+    private final MatchDomainService matchDomainService;
+    private final FootballClubDomainService clubDomainService;
+    private final StadiumDomainService stadiumDomainService;
 
-    @Autowired
-    private FootballClubRepository footballClubRepository;
+    public MatchService(
+            MatchDomainService matchDomainService,
+            FootballClubDomainService clubDomainService,
+            StadiumDomainService stadiumDomainService
+    ) {
+        this.matchDomainService = matchDomainService;
+        this.clubDomainService = clubDomainService;
+        this.stadiumDomainService = stadiumDomainService;
+    }
 
-    @Autowired
-    private StadiumRepository stadiumRepository;
+    @Transactional(readOnly = true)
+    public List<MatchEntity> getUpcomingMatches(int limit) {
+        List<MatchEntity> all = matchDomainService.findUpcoming(LocalDateTime.now());
+        return all.stream().limit(limit).toList();
+    }
 
+    @Transactional(readOnly = true)
+    public List<MatchEntity> getMatchesByCompetition(String competitionCode, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return matchDomainService.findByCompetition(competitionCode, pageable);
+    }
 
-    // ovo minja za fix admin kreiranje karata
-    public MatchEntity createMatch(UUID homeClubId, UUID awayClubId, UUID stadiumId,
-                                   LocalDateTime matchTime, BigDecimal price,
-                                   String competitionCode, String status) {
+    @Transactional(readOnly = true)
+    public List<String> getCompetitionOptions() {
+        return matchDomainService.findDistinctCompetitionCodes();
+    }
 
-        if (homeClubId.equals(awayClubId)) {
-            throw new IllegalArgumentException("nemoš igrat protiv sebe");
-        }
+    @Transactional(readOnly = true)
+    public List<MatchEntity> getAllMatches() {
+        return matchDomainService.findAll();
+    }
 
-        FootballClubEntity homeTeam = footballClubRepository.findById(homeClubId)
-                .orElseThrow(() -> new RuntimeException("homeTeam ne postoji"));
-        FootballClubEntity awayTeam = footballClubRepository.findById(awayClubId)
-                .orElseThrow(() -> new RuntimeException("awayTeam ne postoji"));
-        StadiumEntity stadium = stadiumRepository.findById(stadiumId)
-                .orElseThrow(() -> new RuntimeException("stadium ne postoji"));
+    @Transactional(readOnly = true)
+    public List<MatchEntity> searchMatches(MatchFilterDto filter) {
+        var spec = MatchSpecifications.filterMatches(filter);
+        return matchDomainService.findAll(spec, Sort.by(Sort.Direction.ASC, "matchDatetime"));
+    }
+
+    @Transactional
+    public MatchEntity createMatch(UUID homeClubId, UUID awayClubId, UUID stadiumId, LocalDateTime matchDateTime,
+                                   java.math.BigDecimal price, String competitionCode, String status) {
+
+        FootballClubEntity home = clubDomainService.findById(homeClubId)
+                .orElseThrow(() -> new EntityNotFoundException("Home club not found"));
+
+        FootballClubEntity away = clubDomainService.findById(awayClubId)
+                .orElseThrow(() -> new EntityNotFoundException("Away club not found"));
+
+        StadiumEntity stadium = stadiumDomainService.findById(stadiumId)
+                .orElseThrow(() -> new EntityNotFoundException("Stadium not found"));
 
         MatchEntity match = new MatchEntity();
-        match.setHomeTeam(homeTeam);
-        match.setAwayTeam(awayTeam);
+        match.setHomeTeam(home);
+        match.setAwayTeam(away);
         match.setStadium(stadium);
-        match.setMatchDatetime(matchTime);
+        match.setMatchDatetime(matchDateTime);
         match.setBaseTicketPriceUsd(price);
-
-        // ovo
         match.setCompetitionCode(competitionCode);
         match.setStatus(status);
 
-        return matchRepository.save(match);
+        return matchDomainService.save(match);
     }
 
-    public List<MatchEntity> getAllMatches() {
-        return matchRepository.findAll();
+    @Transactional
+    public MatchEntity createMatchFromForm(CreateMatchForm form) {
+        return createMatch(
+                form.getHomeClubId(),
+                form.getAwayClubId(),
+                form.getStadiumId(),
+                form.getMatchDateTime(),
+                form.getPrice(),
+                form.getCompetitionCode(),
+                form.getStatus()
+        );
     }
 
-    public List<MatchEntity> getMatchesForClub(UUID clubId) {
-        FootballClubEntity club = footballClubRepository.findById(clubId)
-                .orElseThrow(() -> new RuntimeException("klub ne postoji"));
-        return matchRepository.findByHomeTeamOrAwayTeam(club, club);
-    }
-
+    @Transactional
     public void deleteMatch(UUID matchId) {
-        matchRepository.deleteById(matchId);
+        MatchEntity match = matchDomainService.findById(matchId)
+                .orElseThrow(() -> new EntityNotFoundException("Match not found"));
+        matchDomainService.delete(match);
     }
-
-    public List<MatchEntity> getUpcomingMatches(String q) {
-        List<MatchEntity> matches = matchRepository
-                .findByMatchDatetimeAfterOrderByMatchDatetimeAsc(LocalDateTime.now());
-
-        if (q == null || q.trim().isEmpty()) {
-            return matches.stream().limit(30).toList();
-        }
-
-        String needle = q.trim().toLowerCase(Locale.ROOT);
-        return matches.stream()
-                .filter(m ->
-                        (m.getHomeTeam() != null && m.getHomeTeam().getClubName() != null && m.getHomeTeam().getClubName().toLowerCase(Locale.ROOT).contains(needle))
-                                || (m.getAwayTeam() != null && m.getAwayTeam().getClubName() != null && m.getAwayTeam().getClubName().toLowerCase(Locale.ROOT).contains(needle))
-                                || (m.getCompetitionCode() != null && m.getCompetitionCode().toLowerCase(Locale.ROOT).contains(needle))
-                )
-                .limit(30)
-                .toList();
-    }
-    public List<MatchEntity> getUpcomingMatches(MatchFilterDto filter) {
-        var sort = Sort.by(Sort.Direction.ASC, "matchDatetime");
-        var pageable = PageRequest.of(0, 30, sort);
-
-        return matchRepository
-                .findAll(MatchSpecifications.byFilter(filter), pageable)
-                .getContent();
-    }
-
-    public List<String> getCompetitionOptions() {
-        return matchRepository.findDistinctCompetitionCodes();
-    }
-
 }

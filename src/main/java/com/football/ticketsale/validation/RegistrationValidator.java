@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-@Component
+@Component // Spring Bean - UserService
 public class RegistrationValidator implements Validator {
 
     private final UserService userService;

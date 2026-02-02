@@ -21,6 +21,21 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
     Optional<SeatReservationEntity> findByTicket(TicketEntity ticket);
     boolean existsByMatchAndSeatNumber(MatchEntity match, Integer seatNumber);
 
+    @Query("""
+        select (count(sr) > 0)
+        from SeatReservationEntity sr
+        join sr.ticket t
+        where sr.match = :match
+          and sr.seatNumber = :seatNumber
+          and (
+                t.status = 'PAID'
+             or (t.status = 'RESERVED' and t.invoiceEntity is null and t.reservedUntil > :now)
+          )
+    """)
+    boolean existsActiveSeatReservation(@Param("match") MatchEntity match,
+                                        @Param("seatNumber") Integer seatNumber,
+                                        @Param("now") LocalDateTime now);
+
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from SeatReservationEntity sr where sr.ticket = :ticket")
     void deleteByTicket(@Param("ticket") TicketEntity ticket);
